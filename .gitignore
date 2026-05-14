@@ -1,0 +1,8 @@
+# Go build/test artifacts
+bin/
+*.test
+*.out
+coverage.out
+
+# Local memory stores
+citewiserag_memory.jsonl
