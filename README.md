@@ -1,14 +1,27 @@
 # CitewiseRAG
 
-CitewiseRAG is a deterministic Go knowledge layer for assembling retrieved RAG candidates into access-controlled, provenance-aware context. It extends the existing Citewise CLI compatibility surface while adding GraphRAG-oriented packages for node modeling, access gates, provenance, and ranking helpers.
+CitewiseRAG is a deterministic Go context-assembly layer for agentic and enterprise RAG systems. It sits after upstream retrieval and turns candidate graph nodes into an access-controlled, provenance-aware `ContextPlan` that an AI agent can safely answer from or act on.
+
+The original Citewise reading-backlog CLI is still present as a compatibility anchor, but it is not the product focus anymore. The current project is about assembling authoritative, permission-safe, auditable context from GraphRAG, LightRAG, hybrid RRF, and reranker handoffs.
 
 The product truth is `spec.md`. The task ledger and resume workflow live in `DEVPLAN.md`. New development sessions should start with `HANDOFF.md`.
 
+## What This Is For
+
+CitewiseRAG solves the final-mile assembly problem in RAG pipelines:
+
+- Apply hard access control before scoring, packing, provenance expansion, and memory reuse.
+- Rank candidate nodes using relevance, authority, graph importance, freshness, readiness, token fit, and diversity.
+- Pack ranked evidence into query-type-specific slots such as foundation, bridge, counterpoint, procedure, permission, and decision.
+- Preserve source refs, source trails, versions, locators, suppressions, and hygiene signals for auditability.
+- Return deterministic JSON through library, HTTP, stdio, and additive `citewise rag` CLI surfaces.
+
+CitewiseRAG does not retrieve documents or call an LLM. Retrieval systems send candidates in; CitewiseRAG assembles safe context out.
+
 ## Current Scope
 
-Implemented so far:
+Implemented RAG surface:
 
-- Existing Citewise CLI behavior in `main.go` and `pkg/citewise`.
 - RAG node, candidate, edge ontology, conversion, and analysis helpers in `pkg/ragnode`.
 - Hard access-control gates and redaction in `pkg/access`.
 - Provenance source-ref and source-trail builders in `pkg/provenance`.
@@ -21,12 +34,13 @@ Implemented so far:
 - Top-level orchestration in `pkg/rag`, including `rag.Analyze`, default constructors, typed pipeline errors, and end-to-end candidate-to-plan execution.
 - Optional `cmd/serve` HTTP and stdio JSON surfaces for routing, ranking, packing, and hygiene.
 - Additive RAG CLI commands under `citewise rag` for route, rank, pack, and hygiene JSON flows, including `--file -` stdin support.
+- Legacy Citewise reading-backlog behavior in `main.go` and `pkg/citewise`, retained so existing users and fixtures keep working unchanged.
 
 Future work should start by adding new anchored tasks to `DEVPLAN.md`; the planned MVP, release-hardening, and RAG CLI completion slices are implemented.
 
 ## Non-Goals
 
-CitewiseRAG does not generate embeddings, chunk documents, manage vector databases, detect communities, call LLMs, or replace the existing Citewise CLI behavior. Retrieval, reranking, indexing, graph-store operation, and answer generation remain upstream or downstream responsibilities.
+CitewiseRAG does not generate embeddings, chunk documents, manage vector databases, detect communities, call LLMs, or replace the existing legacy Citewise CLI behavior. Retrieval, reranking, indexing, graph-store operation, and answer generation remain upstream or downstream responsibilities.
 
 ## Upstream Handoff
 
@@ -94,7 +108,7 @@ Example JSON requests for `/router`, `/pack`, and stdio `pack` are checked in un
 
 ## RAG CLI
 
-Existing Citewise commands remain unchanged. Additive RAG commands are available under `citewise rag`:
+Additive RAG commands are available under `citewise rag`:
 
 ```sh
 go run . rag route --file testdata/api_examples/pack_request.json
@@ -104,6 +118,8 @@ go run . rag hygiene --file testdata/api_examples/pack_request.json
 ```
 
 All RAG commands emit deterministic JSON and accept `--file -` for stdin. `rag pack` accepts `--clearance`, `--query-type`, `--token-budget`, and `--allow-degraded` options.
+
+The older `roles`, `score`, `queue`, `explain`, `hygiene`, and `export` commands still exist for compatibility with Citewise backlog files. They are useful regression anchors, not the main CitewiseRAG workflow.
 
 Release guardrails are automated in `release_guardrail_test.go`; non-tagged builds must stay free of rejected infrastructure dependencies, while optional parquet dependencies are allowed only behind `graphrag_parquet`.
 

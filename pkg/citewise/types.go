@@ -12,8 +12,9 @@ import (
 	"strings"
 )
 
-// Item is a single unread/read backlog entry. The struct intentionally accepts
-// lightweight metadata because Citewise is a local triage tool, not a citation manager.
+// Item is a legacy Citewise backlog entry. The struct intentionally remains
+// lightweight because pkg/citewise is the compatibility anchor for older CLI
+// workflows; current CitewiseRAG context assembly uses pkg/ragnode.RAGNode.
 type Item struct {
 	ID               string   `json:"id"`
 	Title            string   `json:"title"`
