@@ -24,6 +24,75 @@ const (
 	staleCurrentMinAge = 12
 )
 
+// Scoring weights used in scoreItem. These are the primary policy levers.
+// Weights must sum to 1.0 when combined as: gf*wGoalFit + cent*wCentrality +
+// ready*wReadiness + fresh*wFreshness + fit*wEnergyTimeFit - red*wRedundancy
+const (
+	wGoalFit       = 0.30
+	wCentrality    = 0.20
+	wReadiness     = 0.18
+	wFreshness     = 0.12
+	wEnergyTimeFit = 0.20
+	wRedundancy    = 0.22
+)
+
+// Edge weight multipliers for centrality computation.
+const (
+	edgeWeightPrerequisite = 1.50
+	edgeWeightCites        = 1.10
+	edgeWeightOverview     = 1.25
+	edgeWeightContradicts  = 1.00
+	edgeWeightSameQuestion = 0.80
+	edgeWeightDuplicate    = 0.20
+	edgeWeightDefault      = 0.60
+	edgeWeightOutbound     = 0.65 // outbound edge weight multiplier in centrality
+)
+
+// Classification thresholds.
+const (
+	thresholdFoundation    = 0.60
+	thresholdBridge        = 0.55
+	thresholdCentralityFnd = 0.70
+	thresholdGoalFitLeaf   = 0.45
+)
+
+// Freshness score constants.
+const (
+	freshnessNoYear   = 0.65
+	freshnessRecent   = 0.90 // age <= 2 years
+	freshnessMid      = 0.80 // age <= 7 years
+	freshnessClassic  = 0.82
+	freshnessFloorAge = 24.0 // age at which freshness reaches its floor
+	freshnessFloor    = 0.25
+)
+
+// Energy fit defaults.
+const (
+	defaultEnergyFitUnknown  = 0.80 // either goal or item energy is unspecified
+	defaultEnergyFitMismatch = 0.70
+	defaultEnergyFitHigh     = 0.85 // goal energy matches but not exact
+	penaltyLowGoalHighItem   = 0.35 // low-energy goal with high-energy/high-difficulty item
+)
+
+// Secondary scoring constants used by helper dimensions.
+const (
+	foundationAgeBonus          = 0.20
+	foundationCueBonus          = 0.25
+	foundationCentralityWeight  = 0.55
+	foundationIncomingWeight    = 0.35
+	goalFitNoMatch              = 0.10
+	goalFitBase                 = 0.35
+	goalFitPerMatch             = 0.18
+	readinessDifficultyWeight   = 0.60
+	readinessPrerequisiteWeight = 0.40
+	redundancyDuplicatePenalty  = 0.75
+	redundancyClusterPenalty    = 0.55
+	timeFitFloor                = 0.20
+	timeFitWeight               = 0.55
+	energyFitWeight             = 0.45
+	duplicateSimilarityCutoff   = 0.88
+)
+
 type Analysis struct {
 	Backlog    Backlog
 	Items      map[string]Item
@@ -116,7 +185,7 @@ func centrality(items []Item, out, in map[string][]Edge) map[string]float64 {
 			v += edgeWeight(e.Type) * e.Confidence
 		}
 		for _, e := range out[it.ID] {
-			v += 0.65 * edgeWeight(e.Type) * e.Confidence
+			v += edgeWeightOutbound * edgeWeight(e.Type) * e.Confidence
 		}
 		raw[it.ID] = v
 		if v > max {
@@ -136,19 +205,19 @@ func centrality(items []Item, out, in map[string][]Edge) map[string]float64 {
 func edgeWeight(t string) float64 {
 	switch normEdgeType(t) {
 	case "prerequisite":
-		return 1.5
+		return edgeWeightPrerequisite
 	case "cites":
-		return 1.1
+		return edgeWeightCites
 	case "overview":
-		return 1.25
+		return edgeWeightOverview
 	case "contradicts":
-		return 1.0
+		return edgeWeightContradicts
 	case "same-question":
-		return .8
+		return edgeWeightSameQuestion
 	case "duplicate":
-		return .2
+		return edgeWeightDuplicate
 	default:
-		return .6
+		return edgeWeightDefault
 	}
 }
 
@@ -167,16 +236,16 @@ func classify(it Item, a Analysis, goal Goal) string {
 	if isStaleHype(it, a.NowYear) {
 		return RoleStaleHype
 	}
-	if foundationScore(it, a) >= 0.6 {
+	if foundationScore(it, a) >= thresholdFoundation {
 		return RoleFoundation
 	}
-	if bridgeScore(it, a) >= 0.55 {
+	if bridgeScore(it, a) >= thresholdBridge {
 		return RoleBridge
 	}
-	if degree(it.ID, a) <= 1 && goalFit(it, goal) < 0.45 {
+	if degree(it.ID, a) <= 1 && goalFit(it, goal) < thresholdGoalFitLeaf {
 		return RoleCuriosityLeaf
 	}
-	if a.Centrality[it.ID] >= 0.7 {
+	if a.Centrality[it.ID] >= thresholdCentralityFnd {
 		return RoleFoundation
 	}
 	return RoleCuriosityLeaf
@@ -238,13 +307,13 @@ func foundationScore(it Item, a Analysis) float64 {
 	}
 	age := 0.0
 	if it.Year > 0 && a.NowYear-it.Year >= 5 {
-		age = .2
+		age = foundationAgeBonus
 	}
 	cue := 0.0
 	if strings.Contains(strings.ToLower(it.Type+" "+it.Title+" "+it.Notes), "foundation") || strings.Contains(strings.ToLower(it.Type+" "+it.Title+" "+it.Notes), "classic") {
-		cue = .25
+		cue = foundationCueBonus
 	}
-	return clamp01(a.Centrality[it.ID]*.55 + math.Min(1, float64(incomingPrereq+incomingCites)/3)*.35 + age + cue)
+	return clamp01(a.Centrality[it.ID]*foundationCentralityWeight + math.Min(1, float64(incomingPrereq+incomingCites)/3)*foundationIncomingWeight + age + cue)
 }
 
 func bridgeScore(it Item, a Analysis) float64 {
@@ -272,7 +341,7 @@ func scoreItem(it Item, a Analysis, goal Goal) Score {
 	fresh := freshness(it, a.NowYear)
 	red := redundancyPenalty(it.ID, a)
 	fit := energyTimeFit(it, goal)
-	total := 100 * clamp01(gf*.30+cent*.20+ready*.18+fresh*.12+fit*.20-red*.22)
+	total := 100 * clamp01(gf*wGoalFit+cent*wCentrality+ready*wReadiness+fresh*wFreshness+fit*wEnergyTimeFit-red*wRedundancy)
 	r := []string{
 		percentPhrase("goal fit", gf), percentPhrase("network centrality", cent), percentPhrase("readiness", ready), percentPhrase("energy/time fit", fit),
 	}
@@ -295,9 +364,9 @@ func goalFit(it Item, goal Goal) float64 {
 		}
 	}
 	if matches == 0 {
-		return .10
+		return goalFitNoMatch
 	}
-	return clamp01(.35 + float64(matches)*.18)
+	return clamp01(goalFitBase + float64(matches)*goalFitPerMatch)
 }
 
 func readiness(it Item, a Analysis, goal Goal) float64 {
@@ -321,34 +390,34 @@ func readiness(it Item, a Analysis, goal Goal) float64 {
 	if total > 0 {
 		pre = 1 - float64(missing)/float64(total)
 	}
-	return clamp01(diffFit*.6 + pre*.4)
+	return clamp01(diffFit*readinessDifficultyWeight + pre*readinessPrerequisiteWeight)
 }
 
 func freshness(it Item, now int) float64 {
 	if it.Year == 0 {
-		return .65
+		return freshnessNoYear
 	}
 	age := now - it.Year
 	if age <= 2 {
-		return .9
+		return freshnessRecent
 	}
 	if age <= 7 {
-		return .8
+		return freshnessMid
 	}
 	if strings.Contains(strings.ToLower(it.Type+" "+it.Notes), "classic") {
-		return .82
+		return freshnessClassic
 	}
-	return math.Max(.25, 1-float64(age)/24)
+	return math.Max(freshnessFloor, 1-float64(age)/freshnessFloorAge)
 }
 
 func redundancyPenalty(id string, a Analysis) float64 {
 	if a.Roles[id] == RoleDuplicate {
-		return .75
+		return redundancyDuplicatePenalty
 	}
 	for _, c := range a.Duplicates {
 		for _, x := range c {
 			if x == id {
-				return .55
+				return redundancyClusterPenalty
 			}
 		}
 	}
@@ -362,21 +431,21 @@ func energyTimeFit(it Item, goal Goal) float64 {
 	}
 	timeFit := 1.0
 	if it.LengthMinutes > budget {
-		timeFit = math.Max(.2, float64(budget)/float64(it.LengthMinutes))
+		timeFit = math.Max(timeFitFloor, float64(budget)/float64(it.LengthMinutes))
 	}
-	energyFit := .85
+	energyFit := defaultEnergyFitHigh
 	ge := strings.ToLower(goal.Energy)
 	ie := strings.ToLower(it.Energy)
 	if ge == "" || ie == "" {
-		energyFit = .8
+		energyFit = defaultEnergyFitUnknown
 	} else if ge == ie {
 		energyFit = 1
 	} else if ge == "low" && (ie == "high" || it.Difficulty >= 4) {
-		energyFit = .35
+		energyFit = penaltyLowGoalHighItem
 	} else {
-		energyFit = .7
+		energyFit = defaultEnergyFitMismatch
 	}
-	return clamp01(timeFit*.55 + energyFit*.45)
+	return clamp01(timeFit*timeFitWeight + energyFit*energyFitWeight)
 }
 
 func PlanQueue(a Analysis, budget, limit int) QueuePlan {
@@ -488,7 +557,7 @@ func DetectDuplicates(b Backlog) [][]string {
 	}
 	for i := range b.Items {
 		for j := i + 1; j < len(b.Items); j++ {
-			if titleSimilarity(b.Items[i].Title, b.Items[j].Title) >= .88 {
+			if titleSimilarity(b.Items[i].Title, b.Items[j].Title) >= duplicateSimilarityCutoff {
 				union(b.Items[i].ID, b.Items[j].ID)
 			}
 		}

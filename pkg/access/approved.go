@@ -1,7 +1,5 @@
 package access
 
-import "fmt"
-
 func HasTrustedApprover(ctx Context, approvedBy []string) bool {
 	trusted := map[string]bool{}
 	for _, principal := range ctx.TrustedApprovers {
@@ -13,8 +11,4 @@ func HasTrustedApprover(ctx Context, approvedBy []string) bool {
 		}
 	}
 	return false
-}
-
-func deny(format string, args ...any) Decision {
-	return Decision{Allowed: false, Reason: ReasonAccessControl, Detail: fmt.Sprintf(format, args...)}
 }

@@ -85,6 +85,49 @@ func TestCanUseEdgeAllowsEdges(t *testing.T) {
 	}
 }
 
+func TestCanUseEdgeBetweenChecksEndpointSensitivity(t *testing.T) {
+	controller := NewController()
+	edge := ragnode.Edge{SourceID: "a", TargetID: "b", Type: ragnode.EdgeRelatedTo}
+	cases := []struct {
+		name              string
+		ctx               Context
+		sourceSensitivity ragnode.Sensitivity
+		targetSensitivity ragnode.Sensitivity
+		allowed           bool
+	}{
+		{"public caller public edge", Context{Clearance: ClearancePublic}, ragnode.SensitivityPublic, ragnode.SensitivityPublic, true},
+		{"internal caller confidential source", Context{Clearance: ClearanceInternal}, ragnode.SensitivityConfidential, ragnode.SensitivityPublic, false},
+		{"restricted caller restricted edge", Context{Clearance: ClearanceRestricted}, ragnode.SensitivityRestricted, ragnode.SensitivityRestricted, true},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			decision := controller.CanUseEdgeBetween(tc.ctx, edge, tc.sourceSensitivity, tc.targetSensitivity)
+			if decision.Allowed != tc.allowed {
+				t.Fatalf("Allowed got %v want %v: %+v", decision.Allowed, tc.allowed, decision)
+			}
+		})
+	}
+}
+
+func TestEdgeDecisionUsesSensitivityAwareController(t *testing.T) {
+	decision := EdgeDecision(NewController(), Context{Clearance: ClearanceInternal}, ragnode.Edge{SourceID: "a", TargetID: "b"}, ragnode.SensitivityPublic, ragnode.SensitivityConfidential)
+	if decision.Allowed || decision.Reason != ReasonAccessControl {
+		t.Fatalf("expected sensitivity-aware edge denial, got %+v", decision)
+	}
+}
+
+func TestValidateSensitivity(t *testing.T) {
+	valid := []ragnode.Sensitivity{"", ragnode.SensitivityPublic, ragnode.SensitivityInternal, ragnode.SensitivityConfidential, ragnode.SensitivityRestricted}
+	for _, sensitivity := range valid {
+		if !ValidateSensitivity(sensitivity) {
+			t.Fatalf("expected valid sensitivity %q", sensitivity)
+		}
+	}
+	if ValidateSensitivity("bogus") {
+		t.Fatalf("expected bogus sensitivity to be invalid")
+	}
+}
+
 func TestTenantScopedNodeMustMatchCallerTenant(t *testing.T) {
 	node := ragnode.RAGNode{TenantID: "tenant-a", Sensitivity: ragnode.SensitivityInternal}
 	denied := NewController().CanSeeNode(Context{Clearance: ClearanceRestricted, Attributes: map[string]string{AttrTenantID: "tenant-b"}}, node)

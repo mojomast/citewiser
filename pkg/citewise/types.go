@@ -12,6 +12,8 @@ import (
 	"strings"
 )
 
+const slugMaxLen = 28
+
 // Item is a legacy Citewise backlog entry. The struct intentionally remains
 // lightweight because pkg/citewise is the compatibility anchor for older CLI
 // workflows; current CitewiseRAG context assembly uses pkg/ragnode.RAGNode.
@@ -83,7 +85,7 @@ func ParseBacklog(r io.Reader, ext string) (Backlog, error) {
 			if err2 := json.Unmarshal([]byte(trim), &items); err2 == nil {
 				backlog.Items = items
 			} else {
-				return Backlog{}, err
+				return Backlog{}, err2
 			}
 		}
 		return normalizeBacklog(backlog)
@@ -204,8 +206,8 @@ func slugID(title string, n int) string {
 	if s == "" {
 		s = "item"
 	}
-	if len(s) > 32 {
-		s = s[:32]
+	if len(s) > slugMaxLen {
+		s = s[:slugMaxLen]
 	}
 	return fmt.Sprintf("%s-%d", s, n)
 }

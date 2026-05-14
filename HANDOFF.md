@@ -67,6 +67,7 @@ Completed task commits:
 - `T10.4` pre-rerank redaction helper: `3f4acab`
 - `T11.1` module path and legacy Citewise hardening: `aafd54a`
 - `T12.1` GovOne library surface hardening: `97533d9`
+- `T12.2` pre-integration GovOne fixes: pending commit
 
 Latest ledger-only hash updates exist after several task commits; use `git log --oneline -10` for exact current HEAD.
 
@@ -74,16 +75,17 @@ The working tree is expected to be clean after the T12 ledger hash update commit
 
 ## Next Work
 
-Earliest unblocked task after accepting the current working tree changes: none. All planned tasks through `T12.1` are implemented and verified.
+Earliest unblocked task after accepting the current working tree changes: none. All planned tasks through `T12.2` are implemented and verified.
 
 Primary files to create/update:
 
-- No remaining planned implementation tasks after T12.1.
+- No remaining planned implementation tasks after T12.2.
 - If work continues, use `spec.md` open questions and release feedback to add new `DEVPLAN.md` tasks before coding.
 
 Relevant `DEVPLAN.md` refs:
 
 - `T12.1`: complete in `DEVPLAN.md`.
+- `T12.2`: complete in `DEVPLAN.md`; commit hash pending until this slice is committed.
 - Open decisions remain at the end of `DEVPLAN.md` for post-MVP/product follow-up: D03, D04, D08, D09, D10, and D13 are still unresolved defaults.
 
 Relevant `spec.md` refs:
@@ -104,6 +106,14 @@ T12.1 design decisions made in the current uncommitted slice:
 - `access.ContextFromGovOne` maps GovOne roles to CitewiseRAG clearance and sets tenant groups, trusted approvers, and `tenant_id` attributes.
 - `RAGNode.TenantID` is enforced by `DefaultController` before clearance checks.
 - `ContextPlan.PlanHash` hashes structural identity only, and `SuppressedByReason` is populated by `DefaultPacker.Pack`.
+
+T12.2 design decisions made in the current uncommitted slice:
+
+- `access.deny` now lives in `access.go` beside its primary caller and keeps audit detail formatting internal.
+- `DefaultController.CanUseEdge` remains interface-compatible and permissive; callers with node maps should use `CanUseEdgeBetween` or the compatibility helper `EdgeDecision` for endpoint sensitivity checks.
+- `ValidateSensitivity` is the caller-facing pre-submission check for unknown sensitivity strings; unknown values still fail closed as restricted inside access ordinals.
+- `ragnode.Edge` has no tenant field, so edge tenant mismatch remains enforced by calling `CanSeeNode` on endpoint nodes before `CanUseEdgeBetween`.
+- Legacy `pkg/citewise` scoring literals are now named constants, JSON array parse errors report the array unmarshal error, and generated slug IDs are capped with `slugMaxLen`.
 
 T11.1 design decisions made in the current uncommitted slice:
 
@@ -213,6 +223,7 @@ Verification from the current slice:
 - `go test ./...` passed after each T10 slice.
 - `go build ./...` passed for T11.1.
 - `go test ./...` passed for T11.1.
+- `go test ./...`, `go vet ./...`, and `go build ./...` passed for T12.2.
 
 Parallel option after claiming only one task yourself:
 

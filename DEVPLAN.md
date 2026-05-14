@@ -1219,6 +1219,36 @@ Verification:
 - Run `go build ./...`.
 - Run `go test ./...`.
 
+<!-- TASK:T12.2-PRE-INTEGRATION-FIXES -->
+### [x] T12.2 Fix Pre-Integration Issues For GovOne
+
+<!-- PROGRESS:opencode:T12.2-PRE-INTEGRATION-FIXES:2026-05-14T22:00Z -->
+Status: [x]
+Owner: opencode
+Evidence: moved access deny helper, added edge endpoint-sensitivity access helpers, added sensitivity validation, fixed legacy JSON array error propagation and slug length, named citewise scoring policy constants, added package/access docs and focused tests; `go test ./...`, `go vet ./...`, and `go build ./...` passed
+Spec refs: GovOne pre-integration hardening request; spec.md access-control and legacy compatibility constraints checked
+Docs: README.md Access Policy, pkg/citewise package docs, ContextFromGovOne doc comment, DEVPLAN.md, and HANDOFF.md updated
+Notes: `CanUseEdgeBetween` enforces endpoint sensitivities because `ragnode.Edge` carries no tenant field; tenant mismatches remain enforced by node-level `CanSeeNode`
+Commit: pending
+<!-- /PROGRESS -->
+
+Scope: `pkg/access`, `pkg/citewise`, docs, and tests.
+
+Dependencies: T12.1.
+
+Implementation:
+
+- Keep `CanUseEdge` and `Controller` behavior compatible while adding node-map-aware endpoint sensitivity helpers.
+- Surface unknown sensitivity values through `ValidateSensitivity` while retaining fail-closed ordinal behavior.
+- Preserve legacy Citewise compatibility while fixing JSON array parse error reporting and long generated IDs.
+- Name Citewise scoring constants so policy levers are explicit.
+
+Verification:
+
+- Run `go test ./...`.
+- Run `go vet ./...`.
+- Run `go build ./...`.
+
 ## Parallelization Map
 
 Safe early parallel work after T00.1/T00.2:

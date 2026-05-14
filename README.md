@@ -57,6 +57,8 @@ Upstream tokenizer-provided `TokenCount` values are preferred. When `TokenCount`
 
 GovOne callers should use `access.ContextFromGovOne` to map GovOne RBAC roles to CitewiseRAG clearance. Tenant-scoped nodes set `RAGNode.TenantID`; `DefaultController` denies nodes whose tenant does not match `Context.Attributes[access.AttrTenantID]` regardless of clearance.
 
+Callers building `ragnode.CandidateSet` values should call `access.ValidateSensitivity` before submission and log unknown sensitivity values. CitewiseRAG treats unknown sensitivity as restricted fail-closed during access checks, but validation lets upstream systems preserve an explicit audit trail.
+
 ## Downstream Obligations
 
 Downstream agents receive only `packer.ContextPlan`. Answers or action logs must preserve `query_id`, cited slot `node_id` values, source/origin, version, observed or updated time, locators when present, evidence path, suppressed counts by reason, hygiene signal, and critique summary.

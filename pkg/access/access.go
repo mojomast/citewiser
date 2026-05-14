@@ -1,6 +1,8 @@
 package access
 
 import (
+	"fmt"
+
 	"github.com/mojomast/citewiser/pkg/citewise"
 	"github.com/mojomast/citewiser/pkg/ragnode"
 )
@@ -13,6 +15,8 @@ const (
 	ClearanceConfidential Clearance = "confidential"
 	ClearanceRestricted   Clearance = "restricted"
 )
+
+const sensitivityOrdinalUnknown = 3
 
 const (
 	ReasonAllowed       = "allowed"
@@ -53,6 +57,10 @@ type Controller interface {
 	RedactNode(ctx Context, node ragnode.RAGNode) ragnode.RAGNode
 }
 
+type edgeSensitivityController interface {
+	CanUseEdgeBetween(ctx Context, edge ragnode.Edge, sourceSensitivity, targetSensitivity ragnode.Sensitivity) Decision
+}
+
 type DefaultController struct{}
 
 func NewController() DefaultController {
@@ -75,14 +83,58 @@ func (DefaultController) CanSeeNode(ctx Context, node ragnode.RAGNode) Decision 
 	return Decision{Allowed: true, Reason: ReasonAllowed}
 }
 
+// CanUseEdge allows all edges at the interface level. Callers with a full node map should
+// prefer CanUseEdgeBetween to enforce sensitivity-derived edge access control.
 func (DefaultController) CanUseEdge(ctx Context, edge ragnode.Edge) Decision {
 	return Decision{Allowed: true, Reason: ReasonAllowed}
+}
+
+// CanUseEdgeBetween enforces that the caller can traverse an edge by checking that their
+// clearance permits access to BOTH endpoint sensitivities. Use this when the caller has
+// the full node map available.
+func (DefaultController) CanUseEdgeBetween(ctx Context, edge ragnode.Edge, sourceSensitivity, targetSensitivity ragnode.Sensitivity) Decision {
+	if sensitivityOrdinal(sourceSensitivity) > clearanceOrdinal(ctx.Clearance) {
+		return deny("edge source sensitivity %q exceeds caller clearance %q", sourceSensitivity, ctx.Clearance)
+	}
+	if sensitivityOrdinal(targetSensitivity) > clearanceOrdinal(ctx.Clearance) {
+		return deny("edge target sensitivity %q exceeds caller clearance %q", targetSensitivity, ctx.Clearance)
+	}
+	return Decision{Allowed: true, Reason: ReasonAllowed}
+}
+
+// EdgeDecision applies endpoint sensitivity checks when ctrl supports
+// CanUseEdgeBetween, falling back to Controller.CanUseEdge for legacy
+// Controller implementations. New controllers should add CanUseEdgeBetween to
+// enforce sensitivity-derived edge access without changing the Controller
+// interface contract.
+func EdgeDecision(ctrl Controller, ctx Context, edge ragnode.Edge, sourceSensitivity, targetSensitivity ragnode.Sensitivity) Decision {
+	if checker, ok := ctrl.(edgeSensitivityController); ok {
+		return checker.CanUseEdgeBetween(ctx, edge, sourceSensitivity, targetSensitivity)
+	}
+	return ctrl.CanUseEdge(ctx, edge)
 }
 
 func (DefaultController) RedactNode(ctx Context, node ragnode.RAGNode) ragnode.RAGNode {
 	return ragnode.RAGNode{Item: citewise.Item{ID: node.ID}}
 }
 
+// ValidateSensitivity returns false if s is not a recognized Sensitivity value.
+// Callers building CandidateSet nodes should call this before submitting to the pipeline
+// and log a warning when it returns false; CitewiseRAG will treat unknown values as
+// restricted (fail-closed) but will not surface a warning itself.
+func ValidateSensitivity(s ragnode.Sensitivity) bool {
+	switch s {
+	case ragnode.SensitivityPublic, ragnode.SensitivityInternal,
+		ragnode.SensitivityConfidential, ragnode.SensitivityRestricted, "":
+		return true
+	default:
+		return false
+	}
+}
+
+// sensitivityOrdinal maps known sensitivities to clearance levels. Unknown values map to
+// restricted via sensitivityOrdinalUnknown; callers should use ValidateSensitivity to
+// detect this before submission.
 func sensitivityOrdinal(s ragnode.Sensitivity) int {
 	switch s {
 	case ragnode.SensitivityPublic:
@@ -94,7 +146,7 @@ func sensitivityOrdinal(s ragnode.Sensitivity) int {
 	case ragnode.SensitivityRestricted:
 		return 3
 	default:
-		return 3
+		return sensitivityOrdinalUnknown
 	}
 }
 
@@ -124,4 +176,10 @@ func requiresAgenticApproval(node ragnode.RAGNode) bool {
 
 func allowUnapprovedAgenticNodes(ctx Context) bool {
 	return ctx.Attributes != nil && ctx.Attributes[AttrAllowUnapprovedAgenticNodes] == "true"
+}
+
+// deny returns a Decision that blocks access with an access-control reason and a
+// formatted detail message for audit logs.
+func deny(format string, args ...any) Decision {
+	return Decision{Allowed: false, Reason: ReasonAccessControl, Detail: fmt.Sprintf(format, args...)}
 }

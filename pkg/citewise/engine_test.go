@@ -42,6 +42,29 @@ func TestParseBacklogJSON(t *testing.T) {
 	}
 }
 
+func TestParseBacklogJSONArrayReturnsArrayError(t *testing.T) {
+	_, err := ParseBacklog(strings.NewReader(`[{"title":1}]`), ".json")
+	if err == nil {
+		t.Fatal("expected malformed array error")
+	}
+	if !strings.Contains(err.Error(), "Item.title") || strings.Contains(err.Error(), "Backlog") {
+		t.Fatalf("got error %q, want array unmarshal error", err.Error())
+	}
+}
+
+func TestSlugIDLongTitleStaysShort(t *testing.T) {
+	b, err := ParseBacklog(strings.NewReader(`[{"title":"abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefgh"}]`), ".json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(b.Items) != 1 {
+		t.Fatalf("unexpected item count %d", len(b.Items))
+	}
+	if len(b.Items[0].ID) >= 35 {
+		t.Fatalf("slug ID too long: %q (%d)", b.Items[0].ID, len(b.Items[0].ID))
+	}
+}
+
 func TestParseBacklogCSVItemsAndEdges(t *testing.T) {
 	csv := "record_type,id,title,year,type,topics,source_id,target_id,edge_type\nitem,a,Primer,2024,review,trees,,,\nitem,b,Deep Paper,2024,paper,cooling,,,\nedge,,,,,,a,b,cites\n"
 	b, err := ParseBacklog(strings.NewReader(csv), ".csv")
