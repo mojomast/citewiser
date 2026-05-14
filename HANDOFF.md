@@ -55,13 +55,13 @@ Completed task commits:
 - `T07.1` property and invariant tests: `95ecb14`
 - `T07.2` golden fixtures, docs, and examples: `95ecb14`
 - `T07.3` release gate and compatibility audit: `95ecb14`
-- `T08.1` dependency boundary guardrails: implemented and verified in working tree, pending commit.
-- `T08.2` API and stdio JSON fixtures: implemented and verified in working tree, pending commit.
-- `T08.3` additive RAG CLI commands: implemented and verified in working tree, pending commit.
+- `T08.1` dependency boundary guardrails: `bdf6690`
+- `T08.2` API and stdio JSON fixtures: `bdf6690`
+- `T08.3` additive RAG CLI commands: `bdf6690`
 
 Latest ledger-only hash updates exist after several task commits; use `git log --oneline -10` for exact current HEAD.
 
-The working tree has intentional uncommitted T08.1-T08.3 changes when this handoff was updated: dependency guardrail test, API/stdio fixtures and tests, additive `citewise rag` CLI, README updates, and DEVPLAN updates.
+The working tree is expected to be clean after the T08 ledger hash update commit and push.
 
 ## Next Work
 
@@ -69,12 +69,12 @@ Earliest unblocked task after accepting the current working tree changes: none. 
 
 Primary files to create/update:
 
-- No remaining planned implementation tasks after T08 is committed.
+- No remaining planned implementation tasks.
 - If work continues, use `spec.md` open questions and release feedback to add new `DEVPLAN.md` tasks before coding.
 
 Relevant `DEVPLAN.md` refs:
 
-- `T08.1`, `T08.2`, and `T08.3`: complete in `DEVPLAN.md` pending commit hash update.
+- `T08.1`, `T08.2`, and `T08.3`: complete in `DEVPLAN.md`.
 - Open decisions remain at the end of `DEVPLAN.md` for post-MVP/product follow-up.
 
 Relevant `spec.md` refs:

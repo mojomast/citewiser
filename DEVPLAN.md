@@ -872,7 +872,7 @@ Evidence: added release_guardrail_test.go dependency boundary checks; `go test .
 Spec refs: spec.md section 14 checked
 Docs: not needed: guardrail automates existing release-audit policy
 Notes: none
-Commit: not committed
+Commit: bdf6690
 <!-- /PROGRESS -->
 
 Scope: release audit tests and docs.
@@ -899,7 +899,7 @@ Evidence: added testdata/api_examples fixtures and handler/stdio fixture tests; 
 Spec refs: spec.md section 3.9 checked
 Docs: README.md notes checked-in API/stdin fixture examples
 Notes: none
-Commit: not committed
+Commit: bdf6690
 <!-- /PROGRESS -->
 
 Scope: `testdata/api_examples`, `cmd/serve` tests, README docs if public examples change.
@@ -926,7 +926,7 @@ Evidence: added pkg/ragcli and root dispatch for `citewise rag route`/`pack`, sm
 Spec refs: spec.md open decision D05 checked; user requested continued slices, compatibility tests are locked
 Docs: README.md documents additive RAG CLI usage
 Notes: Existing `pkg/citewise` command handling remains unchanged; root `main` dispatches only the new `rag` namespace to `pkg/ragcli`.
-Commit: not committed
+Commit: bdf6690
 <!-- /PROGRESS -->
 
 Scope: `main.go`, a small RAG CLI package or helper, CLI tests, README docs.
