@@ -325,7 +325,7 @@ Evidence: added pkg/access controller, approver rules, strict redaction, and tes
 Spec refs: spec.md sections 3.3 and 8.1 implemented; decisions D01/D02/D11 defaults applied
 Docs: pkg/access/doc.go documents hard-gate behavior, redaction, and unapproved controlling-node policy
 Notes: Agentic mode is not explicit on access.Context, so permission-record/decision/procedure approval is fail-closed by default unless allow_unapproved_agentic_nodes=true
-Commit: not committed
+Commit: c43759e
 <!-- /PROGRESS -->
 
 Scope: `pkg/access/access.go`, `approved.go`.
