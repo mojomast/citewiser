@@ -570,7 +570,17 @@ Verification:
 - Branch coverage tests for every rule and fallback.
 
 <!-- TASK:T05.1-GRAPHRAG-JSON -->
-### [ ] T05.1 Implement GraphRAG JSON Mapper
+### [x] T05.1 Implement GraphRAG JSON Mapper
+
+<!-- PROGRESS:opencode:T05.1-GRAPHRAG-JSON:2026-05-14T19:48Z -->
+Status: [x]
+Owner: opencode
+Evidence: added pkg/integrations/graphrag JSON mapper, fixture, and tests; `go test ./pkg/integrations/graphrag` passed
+Spec refs: spec.md section 7.1 implemented
+Docs: pkg/integrations/graphrag/doc.go and README.md updated for GraphRAG mapper behavior
+Notes: GraphRAG JSON imports documents, text_units, entities, relationships, community_reports, communities, and covariates; community report rank is stored in Attributes["community_report_rank"] and human_readable_id is preserved.
+Commit: not committed
+<!-- /PROGRESS -->
 
 Scope: `pkg/integrations/graphrag/mapper.go`, `testdata/graphrag_minimal`.
 
@@ -587,7 +597,17 @@ Verification:
 - Fixture test: community report imports as `community-summary` and role overview.
 
 <!-- TASK:T05.2-GRAPHRAG-PARQUET-OPTIONAL -->
-### [ ] T05.2 Implement Optional GraphRAG Parquet Reader
+### [x] T05.2 Implement Optional GraphRAG Parquet Reader
+
+<!-- PROGRESS:opencode:T05.2-GRAPHRAG-PARQUET-OPTIONAL:2026-05-14T19:58Z -->
+Status: [x]
+Owner: opencode
+Evidence: added pkg/integrations/graphrag parquet tag reader/disabled stubs and build-tag test; `go test ./pkg/integrations/graphrag` passed; `go test -tags graphrag_parquet ./pkg/integrations/graphrag` passed
+Spec refs: spec.md section 7.1 and dependency guidance implemented
+Docs: pkg/integrations/graphrag/doc.go and README.md document parquet build-tag isolation
+Notes: github.com/parquet-go/parquet-go imports are only present in files guarded by graphrag_parquet. go.mod now records Go 1.24.9 because parquet-go v0.29.0 requires it.
+Commit: not committed
+<!-- /PROGRESS -->
 
 Scope: `pkg/integrations/graphrag/parquet.go`.
 
@@ -605,7 +625,17 @@ Verification:
 - Run `go test -tags graphrag_parquet ./pkg/integrations/graphrag`.
 
 <!-- TASK:T05.3-LIGHTRAG-HYBRID -->
-### [ ] T05.3 Implement LightRAG, Hybrid, And Reranker Handoff Mappers
+### [x] T05.3 Implement LightRAG, Hybrid, And Reranker Handoff Mappers
+
+<!-- PROGRESS:opencode:T05.3-LIGHTRAG-HYBRID:2026-05-14T20:08Z -->
+Status: [x]
+Owner: opencode
+Evidence: added pkg/integrations/lightrag mapper and tests; added pkg/integrations/hybrid schema and tests; `go test ./pkg/integrations/lightrag ./pkg/integrations/hybrid` passed
+Spec refs: spec.md sections 7.2, 7.3, and 7.4 implemented
+Docs: pkg/integrations/lightrag/doc.go, pkg/integrations/hybrid/doc.go, and README.md updated for handoff behavior
+Notes: LightRAG local/global retrieval modes are preserved; hybrid candidates preserve method scores, ranks, weights, QueryRelevance, and RerankerScore. Cross-encoder scores remain input relevance features only; downstream ranker/packer still enforce access, diversity, counterpoints, and ordering.
+Commit: not committed
+<!-- /PROGRESS -->
 
 Scope: `pkg/integrations/lightrag/mapper.go`, `pkg/integrations/hybrid/schema.go`, cross-encoder handoff fixtures.
 
@@ -624,7 +654,17 @@ Verification:
 - Fixture tests for LightRAG mode preservation, RRF query relevance mapping, and cross-encoder relevance handoff.
 
 <!-- TASK:T05.4-MEMORY -->
-### [ ] T05.4 Implement File-Backed Memory Store
+### [x] T05.4 Implement File-Backed Memory Store
+
+<!-- PROGRESS:opencode:T05.4-MEMORY:2026-05-14T19:44Z -->
+Status: [x]
+Owner: opencode
+Evidence: added pkg/memory interface, file store, redaction/regating helpers, and tests; `go test ./pkg/memory` passed; `go test ./...` passed
+Spec refs: spec.md sections 3.8, 7.6, 8.1, and 10.1-10.3 checked
+Docs: pkg/memory/doc.go and README.md updated for JSONL write-back, re-gating, and reuse behavior
+Notes: FileStore keeps the spec interface and uses store fields for caller access/current node state; red plans are rejected and plan payloads are populated at write time.
+Commit: not committed
+<!-- /PROGRESS -->
 
 Scope: `pkg/memory/interface.go`, `file_store.go`, `redact.go`.
 
@@ -645,7 +685,17 @@ Verification:
 - Tests for store/load, hash stability, write-back payload shape, red-plan rejection, similar prior plans, reuse rejection reasons, redacted load, and concurrent append if feasible.
 
 <!-- TASK:T06.1-RAG-PIPELINE -->
-### [ ] T06.1 Implement Top-Level RAG Pipeline
+### [x] T06.1 Implement Top-Level RAG Pipeline
+
+<!-- PROGRESS:opencode:T06.1-RAG-PIPELINE:2026-05-14T19:44Z -->
+Status: [x]
+Owner: opencode
+Evidence: added pkg/rag pipeline, interfaces, defaults, metadata builder, typed errors, and tests; `go test ./pkg/rag` passed; `go test ./...` passed
+Spec refs: spec.md sections 3.9, 8.1, 12.2 checked
+Docs: pkg/rag/doc.go and README.md updated for orchestration behavior
+Notes: Pipeline exposes `rag.Analyze`, default ranker/packer/router/hygiene/memory constructors, and returns typed errors for invalid candidates, access-denied-only ranked sets, and red plans.
+Commit: not committed
+<!-- /PROGRESS -->
 
 Scope: `pkg/rag/pipeline.go`, `interfaces.go`.
 
@@ -663,7 +713,17 @@ Verification:
 - End-to-end tests from candidate set to context plan.
 
 <!-- TASK:T06.2-HTTP-SERVER -->
-### [ ] T06.2 Implement Optional HTTP Server
+### [x] T06.2 Implement Optional HTTP Server
+
+<!-- PROGRESS:opencode:T06.2-HTTP-SERVER:2026-05-14T19:44Z -->
+Status: [x]
+Owner: opencode
+Evidence: added cmd/serve HTTP main, schema, handlers, and httptest coverage; `go test ./cmd/serve` passed; `go test ./...` passed
+Spec refs: spec.md section 3.9 checked; D04 default red plan HTTP 200 behavior applied
+Docs: README.md updated for server endpoints and red-plan HTTP behavior
+Notes: Server uses stdlib `net/http`, `encoding/json`, `context`, and `log/slog`; `/pack` returns HTTP 200 for red plans with the plan body intact.
+Commit: not committed
+<!-- /PROGRESS -->
 
 Scope: `cmd/serve/main.go`, `handlers.go`, `schema.go`.
 
@@ -683,7 +743,17 @@ Verification:
 - Handler tests with `httptest` for success, bad JSON, access suppression, and red Agentic plan.
 
 <!-- TASK:T06.3-STDIO-INTEGRATION -->
-### [ ] T06.3 Implement Optional Stdio JSON Integration
+### [x] T06.3 Implement Optional Stdio JSON Integration
+
+<!-- PROGRESS:opencode:T06.3-STDIO-INTEGRATION:2026-05-14T19:44Z -->
+Status: [x]
+Owner: opencode
+Evidence: added cmd/serve stdio dispatcher and golden-style router/pack tests; `go test ./cmd/serve` passed; `go test ./...` passed
+Spec refs: spec.md section 3.9 checked
+Docs: README.md updated for stdio command and request/response envelope
+Notes: `go run ./cmd/serve stdio` reuses the same DTOs and pipeline as HTTP for router, rank, pack, and hygiene operations.
+Commit: not committed
+<!-- /PROGRESS -->
 
 Scope: `cmd/serve` or a small sibling command if HTTP and stdio need separate entrypoints.
 

@@ -16,8 +16,12 @@ Implemented so far:
 - Context plan packing in `pkg/packer`, including query-type slot policies, provenance-bearing slots, hygiene signals, lost-in-the-middle ordering, and budget trimming.
 - Graph hygiene analysis in `pkg/hygiene`, including missing-edge suggestions, hygiene scoring, corrective signals, and retrieval targets for red plans.
 - Deterministic query routing in `pkg/router`, including query type, retrieval mode, budget hints, and rule-match reasons.
+- Upstream handoff mappers in `pkg/integrations/graphrag`, `pkg/integrations/lightrag`, and `pkg/integrations/hybrid` for GraphRAG JSON/parquet-tag imports, LightRAG local/global results, hybrid RRF, and cross-encoder relevance handoffs.
+- File-backed memory in `pkg/memory`, using JSONL write-back for non-red accepted plans, stable plan hashes, access re-gating on load, and deterministic topic-Jaccard reuse.
+- Top-level orchestration in `pkg/rag`, including `rag.Analyze`, default constructors, typed pipeline errors, and end-to-end candidate-to-plan execution.
+- Optional `cmd/serve` HTTP and stdio JSON surfaces for routing, ranking, packing, and hygiene.
 
-Placeholder packages remain for future milestones: `pkg/memory`, `pkg/rag`, and upstream integration packages.
+Future milestones focus on hardening, golden fixtures, release gates, and optional post-MVP CLI additions.
 
 ## Development
 
@@ -33,7 +37,35 @@ Run package-specific tests while developing a slice, for example:
 go test ./pkg/ranker
 ```
 
+Optional GraphRAG parquet support is isolated behind the `graphrag_parquet` build tag:
+
+```sh
+go test -tags graphrag_parquet ./pkg/integrations/graphrag
+```
+
 The core module is stdlib-first. Do not add infrastructure, LLM, vector database, Redis, Neo4j, web-router, or graph-algorithm dependencies to core packages unless a later task explicitly changes that rule.
+
+## Memory
+
+`pkg/memory.FileStore` writes one JSON object per line to `citewiserag_memory.jsonl` by default. Callers should invoke `StoreContextPlan` only after a plan is accepted by the caller or an agent completes successfully; red plans are rejected. Loads and reuse checks re-run access control against the store's current caller context and optional current node map, reject superseded or version-mismatched slots, and require topic Jaccard similarity of at least `0.70`.
+
+## Server
+
+The optional server compiles separately from the library:
+
+```sh
+go run ./cmd/serve
+```
+
+It exposes `GET /health` and `POST /router`, `/rank`, `/pack`, and `/hygiene`. Red `/pack` plans return HTTP 200 with `hygiene_signal: "red"` so clients can inspect corrective detail rather than treating red plans as transport failures.
+
+For stdio agent integrations, run:
+
+```sh
+go run ./cmd/serve stdio
+```
+
+The stdio request shape is `{"operation":"router|rank|pack|hygiene","request":{...}}`; the response shape is `{"ok":true,"response":{...}}` or `{"ok":false,"error":"..."}`.
 
 ## Documentation Updates
 

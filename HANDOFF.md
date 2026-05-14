@@ -45,45 +45,50 @@ Completed task commits:
 - `T04.2` lost-in-the-middle ordering/budget trimming: `2a66c2b`
 - `T04.3` hygiene analyzer: `148a510`
 - `T04.4` deterministic query router: `148a510`
+- `T05.1` GraphRAG JSON mapper: implemented and verified in working tree, not committed because no commit was explicitly requested in this slice.
+- `T05.2` optional GraphRAG parquet reader: implemented and verified in working tree, not committed because no commit was explicitly requested in this slice.
+- `T05.3` LightRAG/hybrid/reranker handoff mappers: implemented and verified in working tree, not committed because no commit was explicitly requested in this slice.
+- `T05.4` file-backed memory store: implemented and verified in working tree, not committed because no commit was explicitly requested in this slice.
+- `T06.1` top-level RAG pipeline: implemented and verified in working tree, not committed because no commit was explicitly requested in this slice.
+- `T06.2` optional HTTP server: implemented and verified in working tree, not committed because no commit was explicitly requested in this slice.
+- `T06.3` optional stdio JSON integration: implemented and verified in working tree, not committed because no commit was explicitly requested in this slice.
 
 Latest ledger-only hash updates exist after several task commits; use `git log --oneline -10` for exact current HEAD.
 
-The working tree was expected to be clean after the ledger update commit and push for this slice.
+The working tree has intentional uncommitted T05.1-T06.3 changes when this handoff was updated: README/docs updates, go.mod/go.sum parquet dependency updates, GraphRAG/LightRAG/hybrid integration code and tests, GraphRAG fixture data, memory store code/tests, rag pipeline code/tests, and cmd/serve HTTP/stdio code/tests.
 
 ## Next Work
 
-Earliest unblocked task after accepting the current working tree changes: `T05.1 Implement GraphRAG JSON Mapper`.
+Earliest unblocked task after accepting the current working tree changes: `T07.1 Implement Property And Invariant Tests`.
 
 Primary files to create/update:
 
-- `pkg/integrations/graphrag/doc.go`
-- `pkg/integrations/graphrag/mapper.go`
-- `pkg/integrations/graphrag/*_test.go`
-- `testdata/graphrag_minimal/*`
+- package test files across `pkg/*`
 - `DEVPLAN.md`
 - `HANDOFF.md`
-- `README.md` if public integration behavior is documented
+- `README.md` if new test/golden behavior is documented
 
 Relevant `DEVPLAN.md` refs:
 
-- `T05.1`: around lines 552-568, depends on `T01.3`.
-- `T05.2`: follows T05.1 and is optional parquet work.
+- `T07.1`: around lines 732-746, depends on T02.1, T03.3, T04.1, and T05.4.
+- `T07.2`: follows T07.1 and depends on all M01-M06 tasks.
 - Parallelization map: around lines 687-707.
 
 Relevant `spec.md` refs:
 
-- GraphRAG integration contract: around lines 849-870.
+- Property/invariant test strategy: around lines 1137-1148.
+- Access-control invariants: around lines 969-984.
+- Lost-in-the-middle/budget invariants: around lines 1021-1040.
 - Unit-test strategy: around lines 1137-1148.
 - Dependency guidance: around lines 1203-1217. Keep core stdlib-only unless a task explicitly changes that rule.
 
-Concrete `T05.1` instructions:
+Concrete `T07.1` instructions:
 
-1. Claim `T05.1` in `DEVPLAN.md` with a new `PROGRESS` block.
-2. Implement a JSON mapper for GraphRAG documents, text units, entities, relationships, community reports, communities, and covariates from spec section 7.1.
-3. Add minimal fixtures under `testdata/graphrag_minimal`.
-4. Verify community reports import as `community-summary` with overview role-compatible metadata.
-5. Run `go test ./pkg/integrations/graphrag` and `go test ./...`.
-6. Update `DEVPLAN.md`, `HANDOFF.md`, and `README.md` if public integration behavior is introduced.
+1. Claim `T07.1` in `DEVPLAN.md` with a new `PROGRESS` block.
+2. Add property/invariant tests using `testing/quick` where it fits naturally.
+3. Focus on unauthorized text absence, budget bounds, duplicate limits, deterministic JSON, and provenance coverage.
+4. Run `go test ./...` repeatedly enough to catch nondeterminism.
+5. Update `DEVPLAN.md`, `HANDOFF.md`, and README/docs if public test/golden behavior changes.
 
 T03.1 design decisions made in the current uncommitted slice:
 
@@ -110,17 +115,39 @@ T04.3/T04.4 design decisions made in the current uncommitted slice:
 - Title similarity uses token Jaccard; topic overlap uses intersection over smaller topic set for deterministic heuristic matching.
 - Router applies the spec decision tree in exact order and returns only the first matched rule reason; Agentic wins before temporal if both are present.
 
+T05.1/T05.2/T05.3 design decisions made in the current uncommitted slice:
+
+- GraphRAG JSON imports are dependency-free and accept one export object containing GraphRAG tables.
+- Optional parquet support is isolated behind `graphrag_parquet`; without the tag, `ParseParquetFiles` returns `ErrParquetSupportDisabled`.
+- `github.com/parquet-go/parquet-go` is only imported by build-tagged files, but its module requirements are recorded in `go.mod`/`go.sum`; `go test ./...` without tags passed.
+- LightRAG and hybrid mappers preserve upstream relevance metadata as input features and do not alter downstream access, ranking, diversity, or packing policy.
+
+T05.4/T06.1/T06.2/T06.3 design decisions made in the current uncommitted slice:
+
+- `memory.FileStore` keeps the spec `MemoryWriteBack` interface; caller access/current node state are configured on the store for re-gating and reuse checks.
+- Memory write-back payloads are populated at store time, red plans return `ErrRedPlan`, and appends use `O_APPEND` plus `Sync` guarded by the store mutex.
+- `rag.Pipeline` exposes `rag.Analyze`, default constructors, metadata derivation, and typed errors; red plans return `ErrRedCorrectiveSignal` unless degraded plans are allowed.
+- `cmd/serve` uses stdlib HTTP only; `/pack` returns HTTP 200 for red plans so callers can inspect the red plan and corrective details.
+- `go run ./cmd/serve stdio` accepts `operation` plus `request` JSON and reuses the HTTP DTOs/pipeline behavior.
+
 Verification from the current slice:
 
 - `go test ./pkg/ranker` passed.
 - `go test ./pkg/packer` passed.
 - `go test ./pkg/hygiene` passed.
 - `go test ./pkg/router` passed.
+- `go test ./pkg/integrations/graphrag` passed.
+- `go test -tags graphrag_parquet ./pkg/integrations/graphrag` passed.
+- `go test ./pkg/integrations/lightrag ./pkg/integrations/hybrid` passed.
+- `go test ./pkg/memory` passed.
+- `go test ./pkg/rag` passed.
+- `go test ./cmd/serve` passed.
+- `go test ./pkg/memory ./pkg/rag ./cmd/serve` passed.
 - `go test ./...` passed.
 
 Parallel option after claiming only one task yourself:
 
-- A subagent may research `T05.3` LightRAG mapper requirements without writing files while you implement `T05.1`.
+- A subagent may research `T07.2` golden fixture/docs requirements without writing files while you implement `T07.1`.
 - Do not have subagents edit `DEVPLAN.md` or code concurrently unless each claims a separate unblocked task and the file boundaries are safe.
 
 ## Slice Completion Checklist

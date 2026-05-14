@@ -1,0 +1,25 @@
+{
+  "query_id": "q-graphrag",
+  "query": "summarize vendor access",
+  "documents": [
+    {"id": "doc-1", "human_readable_id": "DOC1", "title": "Vendor Access Policy", "text": "Policy text", "period": "2026-05-01"}
+  ],
+  "text_units": [
+    {"id": "tu-1", "human_readable_id": "TU1", "document_id": "doc-1", "text": "Vendor access detail", "n_tokens": 12, "community_id": "c1"}
+  ],
+  "entities": [
+    {"id": "entity-1", "human_readable_id": "E1", "title": "Vendor", "description": "External vendor", "community_id": "c1"}
+  ],
+  "relationships": [
+    {"source_id": "entity-1", "target_id": "tu-1", "weight": 0.7, "description": "entity appears in text"}
+  ],
+  "community_reports": [
+    {"id": "report-c1", "human_readable_id": "CR1", "community": "c1", "title": "Vendor Access Community", "summary": "Vendor access overview", "rank": 0.91, "period": "2026"}
+  ],
+  "communities": [
+    {"id": "c1", "report_id": "report-c1", "entity_ids": ["entity-1"], "text_unit_ids": ["tu-1"]}
+  ],
+  "covariates": [
+    {"id": "claim-1", "human_readable_id": "COV1", "claim": "Vendors require approval", "status": "positive", "evidence_ids": ["tu-1"], "period": "2026-05-01"}
+  ]
+}
