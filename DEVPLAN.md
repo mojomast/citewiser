@@ -354,7 +354,7 @@ Evidence: added provenance source ref/trail builders, access redaction, and test
 Spec refs: spec.md section 8.2 implemented for T02.2 scope
 Docs: pkg/provenance/doc.go documents deterministic builders and required access redaction before boundaries
 Notes: none
-Commit: not committed
+Commit: cfde974
 <!-- /PROGRESS -->
 
 Scope: `pkg/provenance/trail.go`, `redact.go`.
