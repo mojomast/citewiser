@@ -227,7 +227,17 @@ Verification:
 - Run old CLI fixture tests if fixtures exist.
 
 <!-- TASK:T01.1-RAGNODE-TYPES -->
-### [ ] T01.1 Implement RAGNode Types
+### [x] T01.1 Implement RAGNode Types
+
+<!-- PROGRESS:opencode:T01.1-RAGNODE-TYPES:2026-05-14T17:58Z -->
+Status: [x]
+Owner: opencode
+Evidence: added pkg/ragnode node/candidate/analysis types and tests; `go test ./pkg/ragnode` passed; `go test ./...` passed
+Spec refs: spec.md section 3.2 implemented for T01.1 scope
+Docs: exported type names match spec; no additional docs needed yet because behavior is limited to data shapes and token estimation
+Notes: plain Edge struct added for CandidateSet/RAGAnalysis compilation; normalization remains T01.2
+Commit: not committed
+<!-- /PROGRESS -->
 
 Scope: `pkg/ragnode/node.go`, `candidate.go`, `analysis.go`.
 
