@@ -194,6 +194,13 @@ Goal: align repository identity, tighten legacy Citewise edge-case behavior, and
 
 Exit gate: module path matches the canonical repository, legacy Citewise hardening tests pass, `go build ./...` passes, and `go test ./...` passes.
 
+<!-- ANCHOR:M12-GOVONE-LIBRARY-INTEGRATION -->
+### M12 GovOne Library Integration Hardening
+
+Goal: make CitewiseRAG easy to consume as a Go library dependency from GovOne without changing scoring logic or command behavior.
+
+Exit gate: named mockable interfaces exist for hygiene and memory, GovOne RBAC maps to access.Context, tenant scope is enforced, context plans expose stable audit hashes and suppression counts, and `go build ./...` plus `go test ./...` pass.
+
 ## Work Packets
 
 <!-- TASK:T00.1-BOOTSTRAP-MODULE -->
@@ -1177,6 +1184,35 @@ Implementation:
 - Normalize edge types inside `foundationScore` before comparing prerequisite/cites edge kinds.
 - Add `QueuePlan.BudgetExceeded` and set it when the first-item budget override is used.
 - Parenthesize CSV edge-row detection, clamp legacy Difficulty and Trust ranges, and filter read items from `writeRoles`.
+
+Verification:
+
+- Run `go build ./...`.
+- Run `go test ./...`.
+
+<!-- TASK:T12.1-GOVONE-LIBRARY-SURFACES -->
+### [x] T12.1 Harden Library Surfaces For GovOne
+
+<!-- PROGRESS:opencode:T12.1-GOVONE-LIBRARY-SURFACES:2026-05-14T21:28Z -->
+Status: [x]
+Owner: opencode
+Evidence: added hygiene.Analyzer usage in rag.Pipeline, memory.Store and FileStore session methods, access.ContextFromGovOne, tenant-scoped RAGNode enforcement, ContextPlan.PlanHash, SuppressedByReason, and focused unit tests; `go build ./...` passed; `go test ./...` passed
+Spec refs: spec.md sections 3.2, 3.3, 3.5, 3.6, 3.8, 3.9 checked for interface/API compatibility
+Docs: README.md and package docs updated for GovOne access, tenant scoping, memory/hygiene interfaces, plan hash, and suppression breakdown
+Notes: no scoring weights, CLI command behavior, or cmd/serve source files changed
+Commit: not committed
+<!-- /PROGRESS -->
+
+Scope: `pkg/access`, `pkg/ragnode`, `pkg/packer`, `pkg/hygiene`, `pkg/memory`, `pkg/rag`, docs, and tests.
+
+Dependencies: T11.1.
+
+Implementation:
+
+- Export and use named hygiene and memory interfaces for downstream mocking/substitution.
+- Add GovOne role-to-clearance context construction.
+- Add tenant scoping to `RAGNode` and enforce tenant mismatch as access-control denial.
+- Add deterministic structural `ContextPlan.PlanHash` and `SuppressedByReason` breakdown.
 
 Verification:
 

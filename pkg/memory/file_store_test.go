@@ -50,6 +50,31 @@ func TestStoreRejectsRedPlan(t *testing.T) {
 	}
 }
 
+func TestFileStoreSessionStateInterface(t *testing.T) {
+	var store Store = &FileStore{Path: filepath.Join(t.TempDir(), "memory.jsonl")}
+	state := &MemoryState{Plans: []packer.ContextPlan{testPlan("q1", packer.QueryFactual, packer.HygieneGreen)}}
+	if err := store.Save("session-1", state); err != nil {
+		t.Fatal(err)
+	}
+	loaded, err := store.Load("session-1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(loaded.Plans) != 1 || loaded.Plans[0].QueryID != "q1" {
+		t.Fatalf("loaded state = %+v", loaded)
+	}
+	if err := store.Delete("session-1"); err != nil {
+		t.Fatal(err)
+	}
+	loaded, err = store.Load("session-1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(loaded.Plans) != 0 {
+		t.Fatalf("deleted state still has plans: %+v", loaded)
+	}
+}
+
 func TestSimilarPriorPlansAndReuseRejection(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "memory.jsonl")
 	store := &FileStore{Path: path, Caller: access.Context{Clearance: access.ClearanceRestricted}}

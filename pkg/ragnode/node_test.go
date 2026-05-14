@@ -19,6 +19,7 @@ func TestRAGNodeJSONTags(t *testing.T) {
 		SupersededBy:   "n2",
 		ContextPrefix:  "ctx",
 		CommunityID:    "c1",
+		TenantID:       "tenant-a",
 		SourceTrail:    []SourceHop{{NodeID: "n1", EdgeType: "retrieved", Confidence: 0.9}},
 		Origin:         "graphrag",
 		ObservedAt:     time.Date(2026, 5, 14, 12, 0, 0, 0, time.UTC),
@@ -32,7 +33,7 @@ func TestRAGNodeJSONTags(t *testing.T) {
 		t.Fatal(err)
 	}
 	s := string(b)
-	for _, key := range []string{"text", "chunk_type", "token_count", "version", "sensitivity", "embedding_model", "approved_by", "superseded_by", "context_prefix", "community_id", "source_trail", "origin", "observed_at", "updated_at", "locator", "semantic_type", "attributes", "document_id", "section_path", "table_id", "row_start", "row_end"} {
+	for _, key := range []string{"text", "chunk_type", "token_count", "version", "sensitivity", "embedding_model", "approved_by", "superseded_by", "context_prefix", "community_id", "tenant_id", "source_trail", "origin", "observed_at", "updated_at", "locator", "semantic_type", "attributes", "document_id", "section_path", "table_id", "row_start", "row_end"} {
 		if !strings.Contains(s, `"`+key+`"`) {
 			t.Fatalf("missing JSON key %q in %s", key, s)
 		}

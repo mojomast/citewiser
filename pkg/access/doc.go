@@ -5,6 +5,7 @@
 // controlling Agentic node types require source approval unless an internal
 // validation path explicitly sets AttrAllowUnapprovedAgenticNodes=true.
 // ApprovedBy is source approval, not a viewer allow-list; the MVP visibility
-// model uses clearance and trusted approver checks and intentionally leaves
-// broader ABAC dimensions to caller-owned policy layers.
+// model uses clearance, tenant scope, and trusted approver checks and
+// intentionally leaves broader ABAC dimensions to caller-owned policy layers.
+// ContextFromGovOne is the canonical GovOne RBAC-to-clearance adapter.
 package access

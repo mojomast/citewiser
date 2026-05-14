@@ -17,6 +17,7 @@ CitewiseRAG solves the final-mile assembly problem in RAG pipelines:
 - Pack ranked evidence into query-type-specific slots such as foundation, bridge, counterpoint, procedure, permission, and decision.
 - Preserve source refs, source trails, versions, locators, suppressions, and hygiene signals for auditability.
 - Return deterministic JSON through library, HTTP, stdio, and additive `citewise rag` CLI surfaces.
+- Expose named interfaces and constructors for downstream Go consumers such as GovOne.
 
 CitewiseRAG does not retrieve documents or call an LLM. Retrieval systems send candidates in; CitewiseRAG assembles safe context out.
 
@@ -54,9 +55,13 @@ Upstream tokenizer-provided `TokenCount` values are preferred. When `TokenCount`
 
 `pkg/access` treats `ApprovedBy` as source approval, not a viewer allow-list. Visibility is gated by sensitivity versus caller clearance plus trusted approver checks for confidential or restricted approved sources. Ordinary access-control suppressions use the redacted audit level: node ID, reason, and detail only, never text, title, URL, source, or source trail. Agentic controlling nodes remain fail-closed unless an internal validation path sets `access.AttrAllowUnapprovedAgenticNodes`.
 
+GovOne callers should use `access.ContextFromGovOne` to map GovOne RBAC roles to CitewiseRAG clearance. Tenant-scoped nodes set `RAGNode.TenantID`; `DefaultController` denies nodes whose tenant does not match `Context.Attributes[access.AttrTenantID]` regardless of clearance.
+
 ## Downstream Obligations
 
 Downstream agents receive only `packer.ContextPlan`. Answers or action logs must preserve `query_id`, cited slot `node_id` values, source/origin, version, observed or updated time, locators when present, evidence path, suppressed counts by reason, hygiene signal, and critique summary.
+
+`ContextPlan.PlanHash()` returns a deterministic structural hash for audit records. `ContextPlan.SuppressedByReason` provides a machine-readable suppression breakdown for policy engines.
 
 Table provenance is optional for MVP inputs, but CitewiseRAG preserves `Locator.TableID`, `RowStart`, and `RowEnd` through source refs and packed slots whenever upstream supplies them.
 
@@ -87,6 +92,8 @@ The `go.mod` directive intentionally uses the minor Go version form (`go 1.24`);
 ## Memory
 
 `pkg/memory.FileStore` writes one JSON object per line to `citewiserag_memory.jsonl` by default. Callers should invoke `StoreContextPlan` only after a plan is accepted by the caller or an agent completes successfully; red plans are rejected. Loads and reuse checks re-run access control against the store's current caller context and optional current node map, reject superseded or version-mismatched slots, and require topic Jaccard similarity of at least `0.70`.
+
+Downstream systems can replace the default file-backed memory by implementing `memory.Store`. They can replace graph hygiene by implementing `hygiene.Analyzer` and assigning it on `rag.Pipeline`.
 
 Redis, Neo4j, Mem0, Zep, and other memory backends are caller-owned adapters that can implement `memory.MemoryWriteBack`; core ships only the stdlib JSONL `FileStore`.
 

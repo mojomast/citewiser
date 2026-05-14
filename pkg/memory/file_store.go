@@ -33,6 +33,8 @@ type FileStore struct {
 	mu sync.Mutex
 }
 
+var _ Store = (*FileStore)(nil)
+
 // StoreContextPlan appends a non-red plan to JSONL after populating its
 // write-back payload.
 func (s *FileStore) StoreContextPlan(queryID string, plan packer.ContextPlan) error {
@@ -132,6 +134,52 @@ func (s *FileStore) SimilarPriorPlans(topics []string, limit int) ([]packer.Cont
 	return plans, nil
 }
 
+// Load returns all plans stored under sessionID as a portable memory snapshot.
+func (s *FileStore) Load(sessionID string) (*MemoryState, error) {
+	records, err := s.records()
+	if err != nil {
+		return nil, err
+	}
+	state := &MemoryState{}
+	for _, record := range records {
+		if record.QueryID == sessionID {
+			state.Plans = append(state.Plans, s.regate(record.Plan))
+		}
+	}
+	return state, nil
+}
+
+// Save replaces plans stored under sessionID with state.Plans.
+func (s *FileStore) Save(sessionID string, state *MemoryState) error {
+	if err := s.Delete(sessionID); err != nil {
+		return err
+	}
+	if state == nil {
+		return nil
+	}
+	for _, plan := range state.Plans {
+		if err := s.StoreContextPlan(sessionID, plan); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Delete removes plans stored under sessionID.
+func (s *FileStore) Delete(sessionID string) error {
+	records, err := s.records()
+	if err != nil {
+		return err
+	}
+	kept := records[:0]
+	for _, record := range records {
+		if record.QueryID != sessionID {
+			kept = append(kept, record)
+		}
+	}
+	return s.replaceRecords(kept)
+}
+
 // ReuseRejection reports the first policy reason that prevents plan reuse.
 func (s *FileStore) ReuseRejection(plan packer.ContextPlan, topics []string, queryType packer.QueryType) (ReuseRejection, bool) {
 	if !compatibleQueryType(plan.QueryType, queryType) {
@@ -180,6 +228,23 @@ func (s *FileStore) records() ([]StoredPlan, error) {
 		records = append(records, record)
 	}
 	return records, scanner.Err()
+}
+
+func (s *FileStore) replaceRecords(records []StoredPlan) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	file, err := os.OpenFile(s.path(), os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o600)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	enc := json.NewEncoder(file)
+	for _, record := range records {
+		if err := enc.Encode(record); err != nil {
+			return err
+		}
+	}
+	return file.Sync()
 }
 
 func (s *FileStore) path() string {

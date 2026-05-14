@@ -23,10 +23,8 @@ type Pipeline struct {
 	Ranker  ranker.Ranker
 	Packer  packer.Packer
 	Router  router.QueryRouter
-	Hygiene interface {
-		Analyze(analysis ragnode.RAGAnalysis, allowDegradedPlan bool) hygiene.HygieneReport
-	}
-	Memory memory.MemoryWriteBack
+	Hygiene hygiene.Analyzer
+	Memory  memory.Store
 }
 
 // Request is the library orchestration input.

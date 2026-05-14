@@ -9,6 +9,20 @@ type MemoryWriteBack interface {
 	SimilarPriorPlans(topics []string, limit int) ([]packer.ContextPlan, error)
 }
 
+// Store is the persistence interface for CitewiseRAG session memory.
+// Implement this interface to plug in an external store in place of FileStore.
+type Store interface {
+	MemoryWriteBack
+	Load(sessionID string) (*MemoryState, error)
+	Save(sessionID string, state *MemoryState) error
+	Delete(sessionID string) error
+}
+
+// MemoryState is a portable session-memory snapshot for external stores.
+type MemoryState struct {
+	Plans []packer.ContextPlan `json:"plans,omitempty"`
+}
+
 // WriteBackPayload is the opaque memory payload callers can persist after plan
 // acceptance or successful agent completion.
 type WriteBackPayload struct {

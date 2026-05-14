@@ -23,6 +23,8 @@ const (
 	// AttrAllowUnapprovedAgenticNodes lets internal validation paths inspect
 	// unapproved controlling nodes. Production Agentic packing remains fail-closed.
 	AttrAllowUnapprovedAgenticNodes = "allow_unapproved_agentic_nodes"
+	// AttrTenantID scopes access to tenant-tagged RAG nodes.
+	AttrTenantID = "tenant_id"
 )
 
 const (
@@ -58,6 +60,9 @@ func NewController() DefaultController {
 }
 
 func (DefaultController) CanSeeNode(ctx Context, node ragnode.RAGNode) Decision {
+	if node.TenantID != "" && ctx.Attributes[AttrTenantID] != node.TenantID {
+		return deny("node tenant %q does not match caller tenant", node.TenantID)
+	}
 	if sensitivityOrdinal(node.Sensitivity) > clearanceOrdinal(ctx.Clearance) {
 		return deny("node sensitivity %q exceeds caller clearance %q", node.Sensitivity, ctx.Clearance)
 	}

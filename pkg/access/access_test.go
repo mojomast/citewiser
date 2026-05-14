@@ -85,6 +85,18 @@ func TestCanUseEdgeAllowsEdges(t *testing.T) {
 	}
 }
 
+func TestTenantScopedNodeMustMatchCallerTenant(t *testing.T) {
+	node := ragnode.RAGNode{TenantID: "tenant-a", Sensitivity: ragnode.SensitivityInternal}
+	denied := NewController().CanSeeNode(Context{Clearance: ClearanceRestricted, Attributes: map[string]string{AttrTenantID: "tenant-b"}}, node)
+	if denied.Allowed || denied.Reason != ReasonAccessControl {
+		t.Fatalf("expected tenant mismatch denial, got %+v", denied)
+	}
+	allowed := NewController().CanSeeNode(Context{Clearance: ClearanceInternal, Attributes: map[string]string{AttrTenantID: "tenant-a"}}, node)
+	if !allowed.Allowed {
+		t.Fatalf("expected matching tenant allow, got %+v", allowed)
+	}
+}
+
 func TestRedactNodeRemovesSensitiveFields(t *testing.T) {
 	node := ragnode.RAGNode{
 		Item: citewise.Item{

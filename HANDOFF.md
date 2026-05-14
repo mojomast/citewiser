@@ -66,23 +66,24 @@ Completed task commits:
 - `T10.3` table provenance preservation: `3f4acab`
 - `T10.4` pre-rerank redaction helper: `3f4acab`
 - `T11.1` module path and legacy Citewise hardening: `aafd54a`
+- `T12.1` GovOne library surface hardening: not committed in current slice
 
 Latest ledger-only hash updates exist after several task commits; use `git log --oneline -10` for exact current HEAD.
 
-The working tree is expected to be clean after the T11 ledger hash update commit and push.
+The working tree contains completed and verified T12.1 GovOne library surface changes that are not committed because the user has not explicitly requested a commit.
 
 ## Next Work
 
-Earliest unblocked task after accepting the current working tree changes: none. All planned tasks through `T11.1` are implemented and verified.
+Earliest unblocked task after accepting the current working tree changes: none. All planned tasks through `T12.1` are implemented and verified.
 
 Primary files to create/update:
 
-- No remaining planned implementation tasks after T11.1.
+- No remaining planned implementation tasks after T12.1.
 - If work continues, use `spec.md` open questions and release feedback to add new `DEVPLAN.md` tasks before coding.
 
 Relevant `DEVPLAN.md` refs:
 
-- `T11.1`: complete in `DEVPLAN.md`.
+- `T12.1`: complete in `DEVPLAN.md`.
 - Open decisions remain at the end of `DEVPLAN.md` for post-MVP/product follow-up: D03, D04, D08, D09, D10, and D13 are still unresolved defaults.
 
 Relevant `spec.md` refs:
@@ -95,6 +96,14 @@ Concrete next instructions:
 
 1. If new work is requested, add new anchored tasks to `DEVPLAN.md` before implementation.
 2. Resolve open product questions in `spec.md`/`DEVPLAN.md` before changing behavior that depends on them.
+
+T12.1 design decisions made in the current uncommitted slice:
+
+- `hygiene.Analyzer` is now the named mockable hygiene interface used by `rag.Pipeline`.
+- `memory.Store` extends existing context-plan write-back with portable session `Load`, `Save`, and `Delete`; `FileStore` satisfies it while preserving the old `MemoryWriteBack` interface.
+- `access.ContextFromGovOne` maps GovOne roles to CitewiseRAG clearance and sets tenant groups, trusted approvers, and `tenant_id` attributes.
+- `RAGNode.TenantID` is enforced by `DefaultController` before clearance checks.
+- `ContextPlan.PlanHash` hashes structural identity only, and `SuppressedByReason` is populated by `DefaultPacker.Pack`.
 
 T11.1 design decisions made in the current uncommitted slice:
 

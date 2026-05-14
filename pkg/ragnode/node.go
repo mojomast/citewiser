@@ -74,6 +74,7 @@ type RAGNode struct {
 	SupersededBy   string            `json:"superseded_by,omitempty"`
 	ContextPrefix  string            `json:"context_prefix,omitempty"`
 	CommunityID    string            `json:"community_id,omitempty"`
+	TenantID       string            `json:"tenant_id,omitempty"`
 	SourceTrail    []SourceHop       `json:"source_trail,omitempty"`
 	Origin         string            `json:"origin,omitempty"`
 	ObservedAt     time.Time         `json:"observed_at,omitempty"`

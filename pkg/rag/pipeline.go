@@ -43,14 +43,12 @@ func DefaultPacker() packer.Packer { return packer.NewPacker() }
 func DefaultRouter() router.QueryRouter { return router.NewRouter() }
 
 // DefaultHygieneAnalyzer returns the deterministic graph hygiene analyzer.
-func DefaultHygieneAnalyzer() interface {
-	Analyze(ragnode.RAGAnalysis, bool) hygiene.HygieneReport
-} {
+func DefaultHygieneAnalyzer() hygiene.Analyzer {
 	return hygiene.NewAnalyzer()
 }
 
 // DefaultMemoryStore returns a file-backed memory store at path.
-func DefaultMemoryStore(path string) memory.MemoryWriteBack { return &memory.FileStore{Path: path} }
+func DefaultMemoryStore(path string) memory.Store { return &memory.FileStore{Path: path} }
 
 // Run executes validate -> analyze -> access/rank -> classify -> hygiene -> pack.
 func (p Pipeline) Run(req Request) (Response, error) {

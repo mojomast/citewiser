@@ -75,6 +75,7 @@ func (p DefaultPacker) Pack(analysis ragnode.RAGAnalysis, queryType QueryType, t
 	plan = orderAndTrim(plan, queryType, tokenBudget)
 	plan.HygieneSignal = hygieneSignal(plan, queryType, countSlots(plan.Slots))
 	plan.CritiqueSummary = critiqueSummary(plan)
+	plan.SuppressedByReason = suppressedByReason(plan.Suppressed)
 	return plan
 }
 
@@ -188,4 +189,15 @@ func sortSuppressions(suppressed []SuppressedEntry) {
 		}
 		return suppressed[i].Reason < suppressed[j].Reason
 	})
+}
+
+func suppressedByReason(suppressed []SuppressedEntry) map[string]int {
+	if len(suppressed) == 0 {
+		return nil
+	}
+	counts := map[string]int{}
+	for _, entry := range suppressed {
+		counts[entry.Reason]++
+	}
+	return counts
 }

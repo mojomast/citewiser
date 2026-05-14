@@ -81,6 +81,9 @@ func TestPackSuppressesAccessDeniedNodes(t *testing.T) {
 	if len(plan.Slots) != 0 || countSuppressed(plan, SuppressAccessControl) != 1 || plan.HygieneSignal != HygieneRed {
 		t.Fatalf("expected access suppression only, got %+v", plan)
 	}
+	if plan.SuppressedByReason[SuppressAccessControl] != 1 {
+		t.Fatalf("suppressed breakdown got %+v", plan.SuppressedByReason)
+	}
 }
 
 func TestPackPreservesTableLocatorInSlotSource(t *testing.T) {

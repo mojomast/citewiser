@@ -29,13 +29,18 @@ type HygieneReport struct {
 	RetrievalTargets  []string             `json:"retrieval_targets,omitempty"`
 }
 
+// Analyzer is the interface satisfied by the default hygiene analyzer.
+// External consumers should depend on this interface, not the concrete type.
 type Analyzer interface {
+	Analyze(analysis ragnode.RAGAnalysis, allowDegradedPlan bool) HygieneReport
 	SuggestMissingEdges(analysis ragnode.RAGAnalysis) []EdgeSuggestion
 	HygieneScore(analysis ragnode.RAGAnalysis) float64
 	CorrectiveSignal(analysis ragnode.RAGAnalysis, threshold float64) packer.HygieneSignal
 }
 
 type DefaultAnalyzer struct{}
+
+var _ Analyzer = DefaultAnalyzer{}
 
 func NewAnalyzer() DefaultAnalyzer { return DefaultAnalyzer{} }
 
