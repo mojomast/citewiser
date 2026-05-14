@@ -61,14 +61,14 @@ Completed task commits:
 - `T09.1` RAG CLI rank and hygiene commands: `8a31d95`
 - `T09.2` RAG CLI stdin input support: `8a31d95`
 - `T09.3` RAG CLI golden stdout fixtures: `8a31d95`
-- `T10.1` access policy defaults: not committed in current slice
-- `T10.2` token counting contract: not committed in current slice
-- `T10.3` table provenance preservation: not committed in current slice
-- `T10.4` pre-rerank redaction helper: not committed in current slice
+- `T10.1` access policy defaults: `3f4acab`
+- `T10.2` token counting contract: `3f4acab`
+- `T10.3` table provenance preservation: `3f4acab`
+- `T10.4` pre-rerank redaction helper: `3f4acab`
 
 Latest ledger-only hash updates exist after several task commits; use `git log --oneline -10` for exact current HEAD.
 
-The working tree contains completed, verified T10.1-T10.4 changes that are not committed because the user did not explicitly request a commit.
+The working tree is expected to be clean after the T10 ledger hash update commit and push.
 
 ## Next Work
 

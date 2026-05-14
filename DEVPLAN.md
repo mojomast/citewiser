@@ -1047,7 +1047,7 @@ Evidence: added exported access policy constants and tests; documented access de
 Spec refs: spec.md sections 3.3, 8.1, and open questions for ApprovedBy semantics, caller identity, suppression audit, and Agentic fail-closed checked
 Docs: pkg/access/doc.go, README.md, and spec.md updated
 Notes: none
-Commit: not committed
+Commit: 3f4acab
 <!-- /PROGRESS -->
 
 Scope: `pkg/access`, README/spec decision notes, access tests.
@@ -1075,7 +1075,7 @@ Evidence: added ragnode.UsesEstimatedTokenCount helper, ranker rationale regress
 Spec refs: spec.md sections 3.2, 3.4, and token-counting open question checked
 Docs: README.md and spec.md updated
 Notes: none
-Commit: not committed
+Commit: 3f4acab
 <!-- /PROGRESS -->
 
 Scope: `pkg/ragnode`, `pkg/ranker`, README/spec decision notes, tests.
@@ -1102,7 +1102,7 @@ Evidence: added table-locator preservation tests for provenance source refs and 
 Spec refs: spec.md sections 3.2, 7.5, 8.2, and table-provenance open question checked
 Docs: README.md and spec.md updated
 Notes: none
-Commit: not committed
+Commit: 3f4acab
 <!-- /PROGRESS -->
 
 Scope: `pkg/provenance`, `pkg/packer` if needed, README/spec decision notes, tests.
@@ -1129,7 +1129,7 @@ Evidence: added hybrid.RedactForReranker helper and tests for unauthorized node/
 Spec refs: spec.md sections 7.3, 7.4, 8.1, and cross-encoder leakage open question checked
 Docs: pkg/integrations/hybrid/doc.go, README.md, and spec.md updated
 Notes: none
-Commit: not committed
+Commit: 3f4acab
 <!-- /PROGRESS -->
 
 Scope: `pkg/integrations/hybrid`, README/spec decision notes, tests.
