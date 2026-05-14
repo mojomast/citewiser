@@ -293,7 +293,7 @@ Evidence: added pkg/ragnode convert.go, package docs, and conversion/analysis te
 Spec refs: spec.md sections 3.2, 6, 12.3, 12.4 implemented for T01.3 scope
 Docs: pkg/ragnode/doc.go documents old backlog conversion, new RAG JSON parsing, and CLI parser separation
 Notes: none
-Commit: not committed
+Commit: eaa365a
 <!-- /PROGRESS -->
 
 Scope: `pkg/ragnode/convert.go`, `analysis.go`, RAG JSON adapter tests.
