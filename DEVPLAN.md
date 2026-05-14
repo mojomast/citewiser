@@ -961,7 +961,7 @@ Evidence: added `citewise rag rank` and `citewise rag hygiene`, expanded CLI smo
 Spec refs: spec.md section 3.9 checked
 Docs: pending T09.2/T09.3 combined README update
 Notes: none
-Commit: not committed
+Commit: 8a31d95
 <!-- /PROGRESS -->
 
 Scope: `pkg/ragcli`, root CLI tests, README docs.
@@ -988,7 +988,7 @@ Evidence: added ragcli.RunWithInput and `--file -` parsing, stdin CLI test; `go 
 Spec refs: spec.md section 12.2 checked
 Docs: README.md documents RAG CLI stdin support
 Notes: none
-Commit: not committed
+Commit: 8a31d95
 <!-- /PROGRESS -->
 
 Scope: `pkg/ragcli`, `main.go`, CLI tests, README docs.
@@ -1014,7 +1014,7 @@ Evidence: added testdata/rag_cli_golden fixtures and byte-for-byte RAG CLI stdou
 Spec refs: spec.md section 13.3 checked
 Docs: not needed: fixtures test existing CLI behavior
 Notes: none
-Commit: not committed
+Commit: 8a31d95
 <!-- /PROGRESS -->
 
 Scope: `testdata/rag_cli_golden`, root CLI tests.

@@ -58,13 +58,13 @@ Completed task commits:
 - `T08.1` dependency boundary guardrails: `bdf6690`
 - `T08.2` API and stdio JSON fixtures: `bdf6690`
 - `T08.3` additive RAG CLI commands: `bdf6690`
-- `T09.1` RAG CLI rank and hygiene commands: implemented and verified in working tree, pending commit.
-- `T09.2` RAG CLI stdin input support: implemented and verified in working tree, pending commit.
-- `T09.3` RAG CLI golden stdout fixtures: implemented and verified in working tree, pending commit.
+- `T09.1` RAG CLI rank and hygiene commands: `8a31d95`
+- `T09.2` RAG CLI stdin input support: `8a31d95`
+- `T09.3` RAG CLI golden stdout fixtures: `8a31d95`
 
 Latest ledger-only hash updates exist after several task commits; use `git log --oneline -10` for exact current HEAD.
 
-The working tree has intentional uncommitted T09.1-T09.3 changes when this handoff was updated: M09 DEVPLAN tasks, RAG CLI rank/hygiene/stdin support, RAG CLI golden stdout fixtures/tests, README updates, and HANDOFF updates.
+The working tree is expected to be clean after the T09 ledger hash update commit and push.
 
 ## Next Work
 
@@ -72,12 +72,12 @@ Earliest unblocked task after accepting the current working tree changes: none. 
 
 Primary files to create/update:
 
-- No remaining planned implementation tasks after T09 is committed.
+- No remaining planned implementation tasks.
 - If work continues, use `spec.md` open questions and release feedback to add new `DEVPLAN.md` tasks before coding.
 
 Relevant `DEVPLAN.md` refs:
 
-- `T09.1`, `T09.2`, and `T09.3`: complete in `DEVPLAN.md` pending commit hash update.
+- `T09.1`, `T09.2`, and `T09.3`: complete in `DEVPLAN.md`.
 - Open decisions remain at the end of `DEVPLAN.md` for post-MVP/product follow-up.
 
 Relevant `spec.md` refs:
