@@ -43,12 +43,12 @@ Completed task commits:
 - `T03.3` ranker scoring/suppression: `2a66c2b`
 - `T04.1` slot policies/context plan: `2a66c2b`
 - `T04.2` lost-in-the-middle ordering/budget trimming: `2a66c2b`
-- `T04.3` hygiene analyzer: implemented and verified in working tree; pending commit requested by user at end of slice.
-- `T04.4` deterministic query router: implemented and verified in working tree; pending commit requested by user at end of slice.
+- `T04.3` hygiene analyzer: `148a510`
+- `T04.4` deterministic query router: `148a510`
 
 Latest ledger-only hash updates exist after several task commits; use `git log --oneline -10` for exact current HEAD.
 
-The working tree has intentional uncommitted T04.3-T04.4 changes when this handoff was updated: README/docs updates plus hygiene and router implementation/tests. User requested committing and pushing after this slice.
+The working tree was expected to be clean after the ledger update commit and push for this slice.
 
 ## Next Work
 

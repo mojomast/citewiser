@@ -524,7 +524,7 @@ Evidence: added pkg/hygiene hygiene analyzer, suggestions, signals, and tests; `
 Spec refs: spec.md section 3.6 implemented
 Docs: pkg/hygiene/doc.go and README.md updated for hygiene behavior
 Notes: Red reports include deterministic retrieval targets when degraded plans are not allowed. Hygiene score combines orphan, duplicate, stale, missing bridge, low trust, and unapproved controlling-node ratios.
-Commit: not committed
+Commit: 148a510
 <!-- /PROGRESS -->
 
 Scope: `pkg/hygiene/hygiene.go`, `suggestions.go`, `signal.go`.
@@ -552,7 +552,7 @@ Evidence: added pkg/router metadata, router, heuristics, and branch coverage tes
 Spec refs: spec.md section 3.7 implemented
 Docs: pkg/router/doc.go and README.md updated for deterministic routing behavior
 Notes: Router applies the spec decision tree in exact order and returns a reason for the first matched rule; Agentic intentionally wins before temporal when both cues are present.
-Commit: not committed
+Commit: 148a510
 <!-- /PROGRESS -->
 
 Scope: `pkg/router/router.go`, `heuristics.go`, `metadata.go`.
