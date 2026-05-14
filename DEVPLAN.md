@@ -1083,11 +1083,11 @@ Default: `/pack` returns HTTP 200 with `HygieneSignal=red` and corrective detail
 Needed before: T06.2.
 
 <!-- DECISION:D05-CLI-RAG-COMMANDS -->
-### [?] D05 RAG CLI Commands
+### [x] D05 RAG CLI Commands
 
-Default: MVP exposes library and optional HTTP only. Add `citewise rag pack` and `citewise rag route` only after compatibility tests are locked.
+Resolved: MVP initially exposed library and optional HTTP only. After compatibility tests and release guardrails were locked, additive `citewise rag route`, `rank`, `pack`, and `hygiene` commands were added without changing legacy commands.
 
-Needed before: post-MVP unless user requests CLI.
+Implemented by: T08.3, T09.1, T09.2, and T09.3.
 
 <!-- DECISION:D06-TOKEN-COUNTING -->
 ### [?] D06 Token Counting Source

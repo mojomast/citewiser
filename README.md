@@ -20,8 +20,9 @@ Implemented so far:
 - File-backed memory in `pkg/memory`, using JSONL write-back for non-red accepted plans, stable plan hashes, access re-gating on load, and deterministic topic-Jaccard reuse.
 - Top-level orchestration in `pkg/rag`, including `rag.Analyze`, default constructors, typed pipeline errors, and end-to-end candidate-to-plan execution.
 - Optional `cmd/serve` HTTP and stdio JSON surfaces for routing, ranking, packing, and hygiene.
+- Additive RAG CLI commands under `citewise rag` for route, rank, pack, and hygiene JSON flows, including `--file -` stdin support.
 
-Future milestones focus on hardening, golden fixtures, release gates, and optional post-MVP CLI additions.
+Future work should start by adding new anchored tasks to `DEVPLAN.md`; the planned MVP, release-hardening, and RAG CLI completion slices are implemented.
 
 ## Non-Goals
 
@@ -81,7 +82,7 @@ go run ./cmd/serve stdio
 
 The stdio request shape is `{"operation":"router|rank|pack|hygiene","request":{...}}`; the response shape is `{"ok":true,"response":{...}}` or `{"ok":false,"error":"..."}`.
 
-Example JSON requests for `/router`, `/pack`, and stdio `pack` are checked in under `testdata/api_examples/` and are exercised by the server tests.
+Example JSON requests for `/router`, `/pack`, and stdio `pack` are checked in under `testdata/api_examples/` and are exercised by the server tests. RAG CLI stdout fixtures live under `testdata/rag_cli_golden/`.
 
 ## RAG CLI
 
@@ -95,6 +96,8 @@ go run . rag hygiene --file testdata/api_examples/pack_request.json
 ```
 
 All RAG commands emit deterministic JSON and accept `--file -` for stdin. `rag pack` accepts `--clearance`, `--query-type`, `--token-budget`, and `--allow-degraded` options.
+
+Release guardrails are automated in `release_guardrail_test.go`; non-tagged builds must stay free of rejected infrastructure dependencies, while optional parquet dependencies are allowed only behind `graphrag_parquet`.
 
 ## Documentation Updates
 

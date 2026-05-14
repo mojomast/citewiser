@@ -5,8 +5,8 @@ This file is the first thing a new agent should read. It summarizes the current 
 ## Required Startup Sequence
 
 1. Read `HANDOFF.md` first.
-2. Read `spec.md` for product truth. Current ranker refs: `spec.md` around lines 296-402 and 743-789.
-3. Read `DEVPLAN.md` for task state and sequencing. Resume workflow: around lines 5-16. Documentation discipline: around lines 30-41. Progress marker protocol: around lines 56-89. Next tasks: around lines 392-428.
+2. Read `spec.md` for product truth. Current implementation refs: memory/API/CLI around lines 616-647, 686-740, and 1097-1134; test/dependency guidance around lines 1136-1217.
+3. Read `DEVPLAN.md` for task state and sequencing. Resume workflow: around lines 5-16. Documentation discipline: around lines 30-41. Progress marker protocol: around lines 56-89. Completed post-release tasks are near the end of the work-packet section.
 4. Check git before editing: `git status --short`, `git diff`, `git log --oneline -5`.
 5. Identify the earliest unblocked `[ ]` task in `DEVPLAN.md`. Do not take over `[/]` work unless stale or explicitly approved.
 6. Claim exactly one task by changing its checkbox to `[/]` and adding a new `PROGRESS` block immediately under that task.
@@ -229,7 +229,7 @@ Use subagents for read-only research and independent work only when safe:
 
 ## Current Architecture Notes
 
-- Core is stdlib-only so far.
+- Core runtime packages are stdlib-first; optional GraphRAG parquet imports are isolated behind the `graphrag_parquet` build tag and guarded by release tests.
 - Existing `pkg/citewise` CLI behavior is imported from upstream and must remain unchanged.
 - `pkg/ragnode` owns RAG types, edge ontology, old backlog conversion, RAG JSON parsing, and deterministic analysis construction.
 - `pkg/access` owns hard access decisions and strict node redaction.
