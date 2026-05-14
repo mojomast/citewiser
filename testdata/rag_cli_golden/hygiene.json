@@ -1,0 +1,11 @@
+{
+  "duplicate_clusters": [],
+  "orphan_nodes": [
+    "policy"
+  ],
+  "stale_nodes": [],
+  "missing_bridges": null,
+  "missing_edges": null,
+  "score": 0.8200000000000001,
+  "signal": "green"
+}

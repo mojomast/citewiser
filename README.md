@@ -90,9 +90,11 @@ Existing Citewise commands remain unchanged. Additive RAG commands are available
 ```sh
 go run . rag route --file testdata/api_examples/pack_request.json
 go run . rag pack --file testdata/api_examples/pack_request.json --token-budget 1200
+go run . rag rank --file testdata/api_examples/pack_request.json
+go run . rag hygiene --file testdata/api_examples/pack_request.json
 ```
 
-Both commands emit deterministic JSON. `rag pack` accepts `--clearance`, `--query-type`, `--token-budget`, and `--allow-degraded` options.
+All RAG commands emit deterministic JSON and accept `--file -` for stdin. `rag pack` accepts `--clearance`, `--query-type`, `--token-budget`, and `--allow-degraded` options.
 
 ## Documentation Updates
 

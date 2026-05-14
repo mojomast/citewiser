@@ -1,0 +1,52 @@
+{
+  "query_id": "q-api-pack",
+  "query": "refund policy",
+  "ranked": [
+    {
+      "node": {
+        "id": "policy",
+        "title": "Refund Policy",
+        "goal_fit": 1,
+        "trust": 1,
+        "text": "Refund policy text.",
+        "chunk_type": "document",
+        "token_count": 0,
+        "version": "v1",
+        "sensitivity": "internal",
+        "observed_at": "0001-01-01T00:00:00Z",
+        "updated_at": "0001-01-01T00:00:00Z",
+        "locator": {}
+      },
+      "candidate": {
+        "node_id": "policy",
+        "query_relevance": 1
+      },
+      "score": {
+        "node_id": "policy",
+        "total": 61.7,
+        "query_relevance": 1,
+        "graph_importance": 0,
+        "authority_score": 0.57,
+        "readiness": 0.64,
+        "freshness": 0.65,
+        "token_budget_fit": 0.55,
+        "bridge_bonus": 0,
+        "counterpoint_bonus": 0,
+        "diversity_bonus": 1,
+        "redundancy_penalty": 0,
+        "staleness_penalty": 0,
+        "low_trust_penalty": 0,
+        "role": "curiosity-leaf",
+        "access_allowed": true,
+        "rationale": [
+          "query relevance 1.00",
+          "authority 0.57",
+          "graph importance 0.00",
+          "token budget fit 0.55",
+          "token count estimated as 5"
+        ]
+      }
+    }
+  ],
+  "suppressed": null
+}

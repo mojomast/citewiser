@@ -1,0 +1,59 @@
+{
+  "query_id": "q-api-pack",
+  "query_type": "Factual",
+  "slots": [
+    {
+      "index": 0,
+      "slot_type": "support",
+      "node_id": "policy",
+      "role": "curiosity-leaf",
+      "title": "Refund Policy",
+      "text": "Refund policy text.",
+      "token_count": 5,
+      "score": 66.2,
+      "position": "middle",
+      "source": {
+        "node_id": "policy",
+        "origin": "",
+        "source": "",
+        "version": "v1",
+        "observed_at": "0001-01-01T00:00:00Z",
+        "updated_at": "0001-01-01T00:00:00Z",
+        "locator": {}
+      },
+      "source_trail": [
+        {
+          "node_id": "policy",
+          "edge_type": "retrieved",
+          "confidence": 1
+        },
+        {
+          "node_id": "policy",
+          "edge_type": "slot-required",
+          "confidence": 0.662
+        }
+      ],
+      "must_cite": false,
+      "rationale": "query relevance 1.00; authority 0.57; graph importance 0.00; token budget fit 1.00; token count estimated as 5; query type Factual modifier applied"
+    }
+  ],
+  "suppressed": null,
+  "evidence_path": [
+    "policy"
+  ],
+  "source_trail": [
+    {
+      "node_id": "policy",
+      "edge_type": "retrieved",
+      "confidence": 1
+    },
+    {
+      "node_id": "policy",
+      "edge_type": "slot-required",
+      "confidence": 0.662
+    }
+  ],
+  "critique_summary": "Packed 1 slots with red hygiene and 0 suppressions.",
+  "tokens_used": 5,
+  "hygiene_signal": "red"
+}

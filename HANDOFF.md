@@ -58,23 +58,26 @@ Completed task commits:
 - `T08.1` dependency boundary guardrails: `bdf6690`
 - `T08.2` API and stdio JSON fixtures: `bdf6690`
 - `T08.3` additive RAG CLI commands: `bdf6690`
+- `T09.1` RAG CLI rank and hygiene commands: implemented and verified in working tree, pending commit.
+- `T09.2` RAG CLI stdin input support: implemented and verified in working tree, pending commit.
+- `T09.3` RAG CLI golden stdout fixtures: implemented and verified in working tree, pending commit.
 
 Latest ledger-only hash updates exist after several task commits; use `git log --oneline -10` for exact current HEAD.
 
-The working tree is expected to be clean after the T08 ledger hash update commit and push.
+The working tree has intentional uncommitted T09.1-T09.3 changes when this handoff was updated: M09 DEVPLAN tasks, RAG CLI rank/hygiene/stdin support, RAG CLI golden stdout fixtures/tests, README updates, and HANDOFF updates.
 
 ## Next Work
 
-Earliest unblocked task after accepting the current working tree changes: none. All planned tasks through `T08.3` are implemented and verified.
+Earliest unblocked task after accepting the current working tree changes: none. All planned tasks through `T09.3` are implemented and verified.
 
 Primary files to create/update:
 
-- No remaining planned implementation tasks.
+- No remaining planned implementation tasks after T09 is committed.
 - If work continues, use `spec.md` open questions and release feedback to add new `DEVPLAN.md` tasks before coding.
 
 Relevant `DEVPLAN.md` refs:
 
-- `T08.1`, `T08.2`, and `T08.3`: complete in `DEVPLAN.md`.
+- `T09.1`, `T09.2`, and `T09.3`: complete in `DEVPLAN.md` pending commit hash update.
 - Open decisions remain at the end of `DEVPLAN.md` for post-MVP/product follow-up.
 
 Relevant `spec.md` refs:
@@ -140,6 +143,13 @@ T08.1/T08.2/T08.3 design decisions made in the current uncommitted slice:
 - Public API/stdio request examples live under `testdata/api_examples` and are exercised by `cmd/serve` tests.
 - Additive CLI commands live under `citewise rag route` and `citewise rag pack`; legacy commands still dispatch through `pkg/citewise` unchanged.
 
+T09.1/T09.2/T09.3 design decisions made in the current uncommitted slice:
+
+- `citewise rag rank` emits the same access-gated ranked set shape used by the library ranker.
+- `citewise rag hygiene` emits the hygiene report for a RAG candidate set.
+- `pkg/ragcli.RunWithInput` supports `--file -` for stdin without changing legacy `pkg/citewise` command behavior.
+- `testdata/rag_cli_golden` locks byte-for-byte stdout for `rag route`, `rag rank`, `rag pack`, and `rag hygiene`.
+
 Verification from the current slice:
 
 - `go test ./pkg/ranker` passed.
@@ -164,6 +174,9 @@ Verification from the current slice:
 - `go run . roles --file testdata/citewise_backlog.json` passed.
 - `go run . rag route --file testdata/api_examples/pack_request.json` passed.
 - `go run . rag pack --file testdata/api_examples/pack_request.json --token-budget 1200` passed.
+- `go run . rag rank --file testdata/api_examples/pack_request.json` passed.
+- `go run . rag hygiene --file testdata/api_examples/pack_request.json` passed.
+- `go run . rag route --file - < testdata/api_examples/pack_request.json` passed.
 - `go test ./...` passed.
 
 Parallel option after claiming only one task yourself:

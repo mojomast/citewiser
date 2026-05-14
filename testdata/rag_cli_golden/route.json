@@ -1,0 +1,9 @@
+{
+  "query_type": "Factual",
+  "retrieval_mode": "HybridBM25Dense",
+  "context_budget_hint": 3000,
+  "reasons": [
+    "short query without entity match"
+  ],
+  "counterpoint_required": false
+}

@@ -173,6 +173,13 @@ Goal: automate release guardrails and add small caller-facing integration surfac
 
 Exit gate: dependency boundaries are test-enforced, API/stdout fixtures compile against handlers, additive RAG CLI commands pass smoke tests, and `go test ./...` passes.
 
+<!-- ANCHOR:M09-RAG-CLI-COMPLETION -->
+### M09 RAG CLI Completion
+
+Goal: make the additive `citewise rag` namespace cover the same core operations as the HTTP/stdio surface and keep its JSON output stable.
+
+Exit gate: `rag route`, `rag rank`, `rag pack`, and `rag hygiene` accept file/stdin input, golden stdout fixtures pass, legacy commands still pass, and `go test ./...` passes.
+
 ## Work Packets
 
 <!-- TASK:T00.1-BOOTSTRAP-MODULE -->
@@ -943,6 +950,85 @@ Verification:
 
 - Run CLI smoke tests for old and new commands.
 - Run `go test ./...`.
+
+<!-- TASK:T09.1-RAG-CLI-RANK-HYGIENE -->
+### [x] T09.1 Add RAG CLI Rank And Hygiene Commands
+
+<!-- PROGRESS:opencode:T09.1-RAG-CLI-RANK-HYGIENE:2026-05-14T20:14Z -->
+Status: [x]
+Owner: opencode
+Evidence: added `citewise rag rank` and `citewise rag hygiene`, expanded CLI smoke tests; `go test ./...`, `go run . rag rank --file testdata/api_examples/pack_request.json`, and `go run . rag hygiene --file testdata/api_examples/pack_request.json` passed
+Spec refs: spec.md section 3.9 checked
+Docs: pending T09.2/T09.3 combined README update
+Notes: none
+Commit: not committed
+<!-- /PROGRESS -->
+
+Scope: `pkg/ragcli`, root CLI tests, README docs.
+
+Dependencies: T08.3.
+
+Implementation:
+
+- Add `citewise rag rank` and `citewise rag hygiene` commands.
+- Reuse the same RAG candidate JSON shape as `rag route` and `rag pack`.
+- Emit deterministic JSON.
+
+Verification:
+
+- Run CLI smoke tests and `go test ./...`.
+
+<!-- TASK:T09.2-RAG-CLI-STDIN -->
+### [x] T09.2 Add RAG CLI Stdin Input Support
+
+<!-- PROGRESS:opencode:T09.2-RAG-CLI-STDIN:2026-05-14T20:14Z -->
+Status: [x]
+Owner: opencode
+Evidence: added ragcli.RunWithInput and `--file -` parsing, stdin CLI test; `go test ./...` and `go run . rag route --file - < testdata/api_examples/pack_request.json` passed
+Spec refs: spec.md section 12.2 checked
+Docs: README.md documents RAG CLI stdin support
+Notes: none
+Commit: not committed
+<!-- /PROGRESS -->
+
+Scope: `pkg/ragcli`, `main.go`, CLI tests, README docs.
+
+Dependencies: T09.1.
+
+Implementation:
+
+- Support `--file -` for `citewise rag` commands.
+- Keep legacy Citewise command behavior unchanged.
+
+Verification:
+
+- Run stdin CLI tests and `go test ./...`.
+
+<!-- TASK:T09.3-RAG-CLI-GOLDEN-STDOUT -->
+### [x] T09.3 Add RAG CLI Golden Stdout Fixtures
+
+<!-- PROGRESS:opencode:T09.3-RAG-CLI-GOLDEN-STDOUT:2026-05-14T20:14Z -->
+Status: [x]
+Owner: opencode
+Evidence: added testdata/rag_cli_golden fixtures and byte-for-byte RAG CLI stdout tests; `go test ./...` passed
+Spec refs: spec.md section 13.3 checked
+Docs: not needed: fixtures test existing CLI behavior
+Notes: none
+Commit: not committed
+<!-- /PROGRESS -->
+
+Scope: `testdata/rag_cli_golden`, root CLI tests.
+
+Dependencies: T09.1, T09.2.
+
+Implementation:
+
+- Add byte-for-byte stdout fixtures for `rag route`, `rag rank`, `rag pack`, and `rag hygiene`.
+- Keep fixtures deterministic and readable for caller examples.
+
+Verification:
+
+- Run golden CLI tests and `go test ./...`.
 
 ## Parallelization Map
 

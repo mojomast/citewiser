@@ -14,7 +14,7 @@ func main() {
 
 func run(args []string, stdout, stderr io.Writer) int {
 	if len(args) > 0 && args[0] == "rag" {
-		return ragcli.Run(args[1:], stdout, stderr)
+		return ragcli.RunWithInput(args[1:], os.Stdin, stdout, stderr)
 	}
 	return citewise.Run(args, stdout, stderr)
 }
