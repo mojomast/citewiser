@@ -208,7 +208,7 @@ Evidence: imported upstream github.com/mojomast/citewiseussy main.go, pkg/citewi
 Spec refs: spec.md sections 3.1, 3.2, 11, and 12.3 checked
 Docs: upstream CLI help and existing README-level docs preserved by behavior; no new public API beyond imported compatibility anchor
 Notes: existing code sourced from temporary clone of mojomast/citewiseussy after user guidance; old commands roles, score, queue, explain, hygiene, export preserved
-Commit: not committed
+Commit: a184869
 <!-- /PROGRESS -->
 
 Scope: `pkg/citewise`, `main.go`, existing CLI tests if present.
