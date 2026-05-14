@@ -177,7 +177,7 @@ Evidence: added go.mod, .gitignore, package directory skeletons, and testdata pl
 Spec refs: spec.md section 3.1 checked
 Docs: package doc placeholders added for initial packages only
 Notes: module path github.com/mojomast/citewiseussy; Go go1.24.4 linux/amd64; git was already initialized with no commits
-Commit: not committed
+Commit: 853b335
 <!-- /PROGRESS -->
 
 Scope: `go.mod`, initial directories, placeholder package docs only where needed.
@@ -199,7 +199,17 @@ Verification:
 - Record whether git was initialized and the initial commit hash if created.
 
 <!-- TASK:T00.2-CITEWISE-COMPAT -->
-### [ ] T00.2 Establish Citewise Compatibility Anchor
+### [x] T00.2 Establish Citewise Compatibility Anchor
+
+<!-- PROGRESS:opencode:T00.2-CITEWISE-COMPAT:2026-05-14T17:52Z -->
+Status: [x]
+Owner: opencode
+Evidence: imported upstream github.com/mojomast/citewiseussy main.go, pkg/citewise CLI/types/engine, and regression tests; `go test ./pkg/citewise` passed; `go test ./...` passed
+Spec refs: spec.md sections 3.1, 3.2, 11, and 12.3 checked
+Docs: upstream CLI help and existing README-level docs preserved by behavior; no new public API beyond imported compatibility anchor
+Notes: existing code sourced from temporary clone of mojomast/citewiseussy after user guidance; old commands roles, score, queue, explain, hygiene, export preserved
+Commit: not committed
+<!-- /PROGRESS -->
 
 Scope: `pkg/citewise`, `main.go`, existing CLI tests if present.
 
