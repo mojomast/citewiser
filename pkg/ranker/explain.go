@@ -3,8 +3,8 @@ package ranker
 import (
 	"fmt"
 
-	"github.com/mojomast/citewiseussy/pkg/access"
-	"github.com/mojomast/citewiseussy/pkg/ragnode"
+	"github.com/mojomast/citewiser/pkg/access"
+	"github.com/mojomast/citewiser/pkg/ragnode"
 )
 
 func rationaleForScore(ctx access.Context, node ragnode.RAGNode, score Score, analysis ragnode.RAGAnalysis) []string {

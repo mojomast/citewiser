@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mojomast/citewiseussy/pkg/access"
-	"github.com/mojomast/citewiseussy/pkg/packer"
-	"github.com/mojomast/citewiseussy/pkg/ragnode"
+	"github.com/mojomast/citewiser/pkg/access"
+	"github.com/mojomast/citewiser/pkg/packer"
+	"github.com/mojomast/citewiser/pkg/ragnode"
 )
 
 func TestStoreLoadPayloadAndHash(t *testing.T) {

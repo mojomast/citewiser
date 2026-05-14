@@ -3,7 +3,7 @@ package ragnode
 import (
 	"time"
 
-	"github.com/mojomast/citewiseussy/pkg/citewise"
+	"github.com/mojomast/citewiser/pkg/citewise"
 )
 
 type ChunkType string

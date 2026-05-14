@@ -8,9 +8,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/mojomast/citewiseussy/pkg/packer"
-	"github.com/mojomast/citewiseussy/pkg/rag"
-	"github.com/mojomast/citewiseussy/pkg/router"
+	"github.com/mojomast/citewiser/pkg/packer"
+	"github.com/mojomast/citewiser/pkg/rag"
+	"github.com/mojomast/citewiser/pkg/router"
 )
 
 func TestRunStdioRouterGolden(t *testing.T) {

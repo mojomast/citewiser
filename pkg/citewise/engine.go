@@ -56,9 +56,10 @@ type QueueEntry struct {
 }
 
 type QueuePlan struct {
-	Entries       []QueueEntry
-	Skipped       []QueueEntry
-	BudgetMinutes int
+	Entries        []QueueEntry
+	Skipped        []QueueEntry
+	BudgetMinutes  int
+	BudgetExceeded bool
 }
 
 type HygieneReport struct {
@@ -225,12 +226,13 @@ func foundationScore(it Item, a Analysis) float64 {
 	incomingPrereq := 0
 	incomingCites := 0
 	for _, e := range a.EdgesIn[it.ID] {
-		if e.Type == "prerequisite" {
+		if normEdgeType(e.Type) == "prerequisite" {
 			incomingPrereq++
 		}
 	}
 	for _, e := range a.EdgesIn[it.ID] {
-		if e.Type == "cites" || e.Type == "prerequisite" {
+		typ := normEdgeType(e.Type)
+		if typ == "cites" || typ == "prerequisite" {
 			incomingCites++
 		}
 	}
@@ -409,6 +411,9 @@ func PlanQueue(a Analysis, budget, limit int) QueuePlan {
 		// Always include at least one item regardless of budget, so the caller
 		// always gets an actionable recommendation.
 		if used+c.Item.LengthMinutes <= budget || len(plan.Entries) == 0 {
+			if used+c.Item.LengthMinutes > budget && len(plan.Entries) == 0 {
+				plan.BudgetExceeded = true
+			}
 			plan.Entries = append(plan.Entries, c)
 			used += c.Item.LengthMinutes
 		} else {

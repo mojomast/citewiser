@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mojomast/citewiseussy/pkg/ragnode"
+	"github.com/mojomast/citewiser/pkg/ragnode"
 )
 
 func TestParseJSONFixture(t *testing.T) {

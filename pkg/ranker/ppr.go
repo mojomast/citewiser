@@ -4,7 +4,7 @@ import (
 	"math"
 	"sort"
 
-	"github.com/mojomast/citewiseussy/pkg/ragnode"
+	"github.com/mojomast/citewiser/pkg/ragnode"
 )
 
 const (

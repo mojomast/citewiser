@@ -4,7 +4,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/mojomast/citewiseussy/pkg/ragnode"
+	"github.com/mojomast/citewiser/pkg/ragnode"
 )
 
 func (DefaultAnalyzer) SuggestMissingEdges(analysis ragnode.RAGAnalysis) []EdgeSuggestion {

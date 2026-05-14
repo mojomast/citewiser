@@ -53,6 +53,19 @@ func TestParseBacklogCSVItemsAndEdges(t *testing.T) {
 	}
 }
 
+func TestNormalizeBacklogClampsDifficultyAndTrust(t *testing.T) {
+	b, err := ParseBacklog(strings.NewReader(`{"items":[{"id":"low","title":"Low","difficulty":-4,"trust":-0.5},{"id":"high","title":"High","difficulty":8,"trust":1.7}]}`), ".json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if b.Items[0].Difficulty != 1 || b.Items[0].Trust != 0 {
+		t.Fatalf("low item not clamped: %+v", b.Items[0])
+	}
+	if b.Items[1].Difficulty != 5 || b.Items[1].Trust != 1 {
+		t.Fatalf("high item not clamped: %+v", b.Items[1])
+	}
+}
+
 func TestRoleClassificationTable(t *testing.T) {
 	a := Analyze(fixtureBacklog(), fixtureBacklog().Goal)
 	cases := map[string]string{"classic": RoleFoundation, "review": RoleOverview, "counter": RoleCounterpoint, "hype": RoleStaleHype, "leaf": RoleCuriosityLeaf, "dupe1": RoleDuplicate, "dupe2": RoleDuplicate}
@@ -124,6 +137,27 @@ func TestQueuePlanningHonorsBudgetAndLimit(t *testing.T) {
 	}
 	if p.Entries[0].Item.ID != "review" {
 		t.Fatalf("expected review first, got %s", p.Entries[0].Item.ID)
+	}
+}
+
+func TestPlanQueueSignalsBudgetExceededForFirstItemOverride(t *testing.T) {
+	a := Analyze(Backlog{Items: []Item{{ID: "long", Title: "Long", LengthMinutes: 120, GoalFit: 1}}}, Goal{})
+	p := PlanQueue(a, 30, 1)
+	if len(p.Entries) != 1 || p.Entries[0].Item.ID != "long" {
+		t.Fatalf("expected forced first item, got %+v", p.Entries)
+	}
+	if !p.BudgetExceeded {
+		t.Fatalf("expected budget exceeded signal: %+v", p)
+	}
+}
+
+func TestWriteRolesSkipsReadItems(t *testing.T) {
+	a := Analyze(Backlog{Items: []Item{{ID: "read", Title: "Read", Status: "read"}, {ID: "unread", Title: "Unread", Status: "unread"}}}, Goal{})
+	var out bytes.Buffer
+	writeRoles(&out, a, "text")
+	got := out.String()
+	if strings.Contains(got, "- read:") || !strings.Contains(got, "- unread:") {
+		t.Fatalf("roles output did not filter read items: %q", got)
 	}
 }
 

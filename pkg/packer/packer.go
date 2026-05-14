@@ -5,10 +5,10 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/mojomast/citewiseussy/pkg/access"
-	"github.com/mojomast/citewiseussy/pkg/provenance"
-	"github.com/mojomast/citewiseussy/pkg/ragnode"
-	"github.com/mojomast/citewiseussy/pkg/ranker"
+	"github.com/mojomast/citewiser/pkg/access"
+	"github.com/mojomast/citewiser/pkg/provenance"
+	"github.com/mojomast/citewiser/pkg/ragnode"
+	"github.com/mojomast/citewiser/pkg/ranker"
 )
 
 const (

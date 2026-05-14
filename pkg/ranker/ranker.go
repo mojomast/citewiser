@@ -3,8 +3,8 @@ package ranker
 import (
 	"sort"
 
-	"github.com/mojomast/citewiseussy/pkg/access"
-	"github.com/mojomast/citewiseussy/pkg/ragnode"
+	"github.com/mojomast/citewiser/pkg/access"
+	"github.com/mojomast/citewiser/pkg/ragnode"
 )
 
 // Score is the inspectable ranking breakdown for one candidate or suppression.

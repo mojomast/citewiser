@@ -6,6 +6,8 @@ The original Citewise reading-backlog CLI is still present as a compatibility an
 
 The product truth is `spec.md`. The task ledger and resume workflow live in `DEVPLAN.md`. New development sessions should start with `HANDOFF.md`.
 
+Canonical repository and Go module path: `github.com/mojomast/citewiser`.
+
 ## What This Is For
 
 CitewiseRAG solves the final-mile assembly problem in RAG pipelines:
@@ -79,6 +81,8 @@ go test -tags graphrag_parquet ./pkg/integrations/graphrag
 ```
 
 The core module is stdlib-first. Do not add infrastructure, LLM, vector database, Redis, Neo4j, web-router, or graph-algorithm dependencies to core packages unless a later task explicitly changes that rule.
+
+The `go.mod` directive intentionally uses the minor Go version form (`go 1.24`); patch versions belong in a `toolchain` directive, not the module `go` directive.
 
 ## Memory
 

@@ -3,7 +3,7 @@ package ranker
 import (
 	"math"
 
-	"github.com/mojomast/citewiseussy/pkg/ragnode"
+	"github.com/mojomast/citewiser/pkg/ragnode"
 )
 
 // TokenBudgetFit returns the bounded fit score for a node under tokenBudget,

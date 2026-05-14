@@ -3,8 +3,8 @@ package access
 import (
 	"testing"
 
-	"github.com/mojomast/citewiseussy/pkg/citewise"
-	"github.com/mojomast/citewiseussy/pkg/ragnode"
+	"github.com/mojomast/citewiser/pkg/citewise"
+	"github.com/mojomast/citewiser/pkg/ragnode"
 )
 
 func TestClearanceCombinations(t *testing.T) {

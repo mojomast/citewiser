@@ -3,7 +3,7 @@ package lightrag
 import (
 	"testing"
 
-	"github.com/mojomast/citewiseussy/pkg/ragnode"
+	"github.com/mojomast/citewiser/pkg/ragnode"
 )
 
 func TestMapHandoffPreservesModesAndRelationships(t *testing.T) {

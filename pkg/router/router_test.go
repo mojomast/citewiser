@@ -3,7 +3,7 @@ package router
 import (
 	"testing"
 
-	"github.com/mojomast/citewiseussy/pkg/packer"
+	"github.com/mojomast/citewiser/pkg/packer"
 )
 
 func TestRouteDecisionBranches(t *testing.T) {

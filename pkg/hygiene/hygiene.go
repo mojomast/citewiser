@@ -3,9 +3,9 @@ package hygiene
 import (
 	"sort"
 
-	"github.com/mojomast/citewiseussy/pkg/citewise"
-	"github.com/mojomast/citewiseussy/pkg/packer"
-	"github.com/mojomast/citewiseussy/pkg/ragnode"
+	"github.com/mojomast/citewiser/pkg/citewise"
+	"github.com/mojomast/citewiser/pkg/packer"
+	"github.com/mojomast/citewiser/pkg/ragnode"
 )
 
 const DefaultThreshold = 0.55

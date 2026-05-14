@@ -4,8 +4,8 @@ import (
 	"io"
 	"os"
 
-	"github.com/mojomast/citewiseussy/pkg/citewise"
-	"github.com/mojomast/citewiseussy/pkg/ragcli"
+	"github.com/mojomast/citewiser/pkg/citewise"
+	"github.com/mojomast/citewiser/pkg/ragcli"
 )
 
 func main() {

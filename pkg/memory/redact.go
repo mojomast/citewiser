@@ -1,8 +1,8 @@
 package memory
 
 import (
-	"github.com/mojomast/citewiseussy/pkg/access"
-	"github.com/mojomast/citewiseussy/pkg/packer"
+	"github.com/mojomast/citewiser/pkg/access"
+	"github.com/mojomast/citewiser/pkg/packer"
 )
 
 func (s *FileStore) regate(plan packer.ContextPlan) packer.ContextPlan {

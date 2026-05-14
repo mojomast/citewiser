@@ -5,8 +5,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/mojomast/citewiseussy/pkg/packer"
-	"github.com/mojomast/citewiseussy/pkg/rag"
+	"github.com/mojomast/citewiser/pkg/packer"
+	"github.com/mojomast/citewiser/pkg/rag"
 )
 
 type server struct {

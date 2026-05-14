@@ -1,6 +1,6 @@
 package memory
 
-import "github.com/mojomast/citewiseussy/pkg/packer"
+import "github.com/mojomast/citewiser/pkg/packer"
 
 // MemoryWriteBack stores accepted context plans and retrieves prior plans.
 type MemoryWriteBack interface {

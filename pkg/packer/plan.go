@@ -1,6 +1,6 @@
 package packer
 
-import "github.com/mojomast/citewiseussy/pkg/ragnode"
+import "github.com/mojomast/citewiser/pkg/ragnode"
 
 // ContextSlot is one selected context item with provenance and placement data.
 type ContextSlot struct {

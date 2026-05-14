@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mojomast/citewiseussy/pkg/citewise"
+	"github.com/mojomast/citewiser/pkg/citewise"
 )
 
 func TestBacklogDefaultsFromSpec123(t *testing.T) {

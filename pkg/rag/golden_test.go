@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/mojomast/citewiseussy/pkg/packer"
-	"github.com/mojomast/citewiseussy/pkg/ragnode"
+	"github.com/mojomast/citewiser/pkg/packer"
+	"github.com/mojomast/citewiser/pkg/ragnode"
 )
 
 func TestGoldenContextPlans(t *testing.T) {

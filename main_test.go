@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/mojomast/citewiseussy/pkg/ragcli"
+	"github.com/mojomast/citewiser/pkg/ragcli"
 )
 
 func TestMainDelegatesHelp(t *testing.T) {

@@ -65,23 +65,24 @@ Completed task commits:
 - `T10.2` token counting contract: `3f4acab`
 - `T10.3` table provenance preservation: `3f4acab`
 - `T10.4` pre-rerank redaction helper: `3f4acab`
+- `T11.1` module path and legacy Citewise hardening: not committed in current slice
 
 Latest ledger-only hash updates exist after several task commits; use `git log --oneline -10` for exact current HEAD.
 
-The working tree is expected to be clean after the T10 ledger hash update commit and push.
+The working tree contains completed, verified T11.1 changes that are not committed yet.
 
 ## Next Work
 
-Earliest unblocked task after accepting the current working tree changes: none. All planned tasks through `T10.4` are implemented and verified.
+Earliest unblocked task after accepting the current working tree changes: none. All planned tasks through `T11.1` are implemented and verified.
 
 Primary files to create/update:
 
-- No remaining planned implementation tasks after T10.4.
+- No remaining planned implementation tasks after T11.1.
 - If work continues, use `spec.md` open questions and release feedback to add new `DEVPLAN.md` tasks before coding.
 
 Relevant `DEVPLAN.md` refs:
 
-- `T10.1`, `T10.2`, `T10.3`, and `T10.4`: complete in `DEVPLAN.md`.
+- `T11.1`: complete in `DEVPLAN.md`.
 - Open decisions remain at the end of `DEVPLAN.md` for post-MVP/product follow-up: D03, D04, D08, D09, D10, and D13 are still unresolved defaults.
 
 Relevant `spec.md` refs:
@@ -94,6 +95,12 @@ Concrete next instructions:
 
 1. If new work is requested, add new anchored tasks to `DEVPLAN.md` before implementation.
 2. Resolve open product questions in `spec.md`/`DEVPLAN.md` before changing behavior that depends on them.
+
+T11.1 design decisions made in the current uncommitted slice:
+
+- Canonical module path is now `github.com/mojomast/citewiser`; all internal imports and docs were updated from the old compatibility name.
+- `go.mod` now uses `go 1.24` because patch versions do not belong in the `go` directive.
+- Legacy `pkg/citewise` hardening is intentionally compatibility-preserving except for additive `QueuePlan.BudgetExceeded` signaling and read-item filtering in role output.
 
 T10.1/T10.2/T10.3/T10.4 design decisions made in the current uncommitted slice:
 
@@ -195,6 +202,8 @@ Verification from the current slice:
 - `go test ./pkg/provenance ./pkg/packer` passed for T10.3.
 - `go test ./pkg/integrations/hybrid` passed for T10.4.
 - `go test ./...` passed after each T10 slice.
+- `go build ./...` passed for T11.1.
+- `go test ./...` passed for T11.1.
 
 Parallel option after claiming only one task yourself:
 

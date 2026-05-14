@@ -116,7 +116,7 @@ func parseCSV(r io.Reader) (Backlog, error) {
 	var backlog Backlog
 	for _, row := range records[1:] {
 		recType := strings.ToLower(get(row, "record_type", "kind"))
-		if recType == "edge" || get(row, "edge_type", "type") != "" && get(row, "source_id") != "" && get(row, "target_id") != "" {
+		if recType == "edge" || (get(row, "edge_type", "type") != "" && get(row, "source_id") != "" && get(row, "target_id") != "") {
 			backlog.Edges = append(backlog.Edges, Edge{SourceID: get(row, "source_id"), TargetID: get(row, "target_id"), Type: get(row, "edge_type", "type"), Confidence: parseFloat(get(row, "confidence"))})
 			continue
 		}
@@ -154,6 +154,13 @@ func normalizeBacklog(b Backlog) (Backlog, error) {
 		if b.Items[i].Difficulty == 0 {
 			b.Items[i].Difficulty = 3
 		}
+		if b.Items[i].Difficulty < 1 {
+			b.Items[i].Difficulty = 1
+		}
+		if b.Items[i].Difficulty > 5 {
+			b.Items[i].Difficulty = 5
+		}
+		b.Items[i].Trust = clampFloat(b.Items[i].Trust, 0, 1)
 		if b.Items[i].LengthMinutes == 0 {
 			b.Items[i].LengthMinutes = 45
 		}
@@ -169,6 +176,16 @@ func normalizeBacklog(b Backlog) (Backlog, error) {
 
 func parseInt(s string) int       { v, _ := strconv.Atoi(strings.TrimSpace(s)); return v }
 func parseFloat(s string) float64 { v, _ := strconv.ParseFloat(strings.TrimSpace(s), 64); return v }
+
+func clampFloat(v, min, max float64) float64 {
+	if v < min {
+		return min
+	}
+	if v > max {
+		return max
+	}
+	return v
+}
 
 func splitList(s string) []string {
 	parts := strings.FieldsFunc(s, func(r rune) bool { return r == ';' || r == '|' || r == ',' })

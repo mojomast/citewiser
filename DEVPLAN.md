@@ -187,6 +187,13 @@ Goal: turn unresolved MVP defaults into explicit, tested caller-facing behavior 
 
 Exit gate: the first four hardening slices resolve their referenced open decisions in docs/tests, user-visible behavior is documented, and `go test ./...` passes.
 
+<!-- ANCHOR:M11-REPO-HARDENING -->
+### M11 Repository Hardening
+
+Goal: align repository identity, tighten legacy Citewise edge-case behavior, and keep build/test verification clean after public module-path correction.
+
+Exit gate: module path matches the canonical repository, legacy Citewise hardening tests pass, `go build ./...` passes, and `go test ./...` passes.
+
 ## Work Packets
 
 <!-- TASK:T00.1-BOOTSTRAP-MODULE -->
@@ -198,7 +205,7 @@ Owner: opencode
 Evidence: added go.mod, .gitignore, package directory skeletons, and testdata placeholders; `go test ./...` passed
 Spec refs: spec.md section 3.1 checked
 Docs: package doc placeholders added for initial packages only
-Notes: module path github.com/mojomast/citewiseussy; Go go1.24.4 linux/amd64; git was already initialized with no commits
+Notes: module path github.com/mojomast/citewiser; Go go1.24.4 linux/amd64; git was already initialized with no commits
 Commit: 853b335
 <!-- /PROGRESS -->
 
@@ -208,7 +215,7 @@ Dependencies: none.
 
 Implementation:
 
-- Initialize module as `github.com/mojomast/citewiseussy` unless the existing repository declares a different module.
+- Initialize module as `github.com/mojomast/citewiser` unless the existing repository declares a different module.
 - If the workspace is not already a git repository, initialize git before implementation work so task commits can be recorded.
 - Add a minimal `.gitignore` for Go build/test artifacts and local memory files such as `citewiserag_memory.jsonl`.
 - Create package directories from `spec.md` section 3.1.
@@ -226,10 +233,10 @@ Verification:
 <!-- PROGRESS:opencode:T00.2-CITEWISE-COMPAT:2026-05-14T17:52Z -->
 Status: [x]
 Owner: opencode
-Evidence: imported upstream github.com/mojomast/citewiseussy main.go, pkg/citewise CLI/types/engine, and regression tests; `go test ./pkg/citewise` passed; `go test ./...` passed
+Evidence: imported upstream github.com/mojomast/citewiser main.go, pkg/citewise CLI/types/engine, and regression tests; `go test ./pkg/citewise` passed; `go test ./...` passed
 Spec refs: spec.md sections 3.1, 3.2, 11, and 12.3 checked
 Docs: upstream CLI help and existing README-level docs preserved by behavior; no new public API beyond imported compatibility anchor
-Notes: existing code sourced from temporary clone of mojomast/citewiseussy after user guidance; old commands roles, score, queue, explain, hygiene, export preserved
+Notes: existing code sourced from the legacy Citewise repository after user guidance; old commands roles, score, queue, explain, hygiene, export preserved
 Commit: a184869
 <!-- /PROGRESS -->
 
@@ -239,7 +246,7 @@ Dependencies: T00.1.
 
 Implementation:
 
-- If existing `github.com/mojomast/citewiseussy` code is present, preserve it unchanged except for mechanical relocation if required.
+- If existing `github.com/mojomast/citewiser` code is present, preserve it unchanged except for mechanical relocation if required.
 - If only `spec.md` is present, create the smallest compatible `pkg/citewise` surface needed by RAG packages: `Item`, `Edge`, `Goal`, `Analysis`, classifier hooks, centrality, duplicate/hygiene/readiness stubs backed by tests.
 - Do not change old command names: `roles`, `score`, `queue`, `explain`, `hygiene`, `export`.
 
@@ -1145,6 +1152,36 @@ Implementation:
 Verification:
 
 - Run `go test ./pkg/integrations/hybrid` and `go test ./...`.
+
+<!-- TASK:T11.1-REPO-CITEWISE-HARDENING -->
+### [x] T11.1 Align Module Path And Harden Legacy Citewise Edges
+
+<!-- PROGRESS:opencode:T11.1-REPO-CITEWISE-HARDENING:2026-05-14T21:05Z -->
+Status: [x]
+Owner: opencode
+Evidence: updated module path/imports to github.com/mojomast/citewiser; changed go directive to 1.24; hardened legacy Citewise foundation scoring, queue budget signaling, CSV edge parsing, range normalization, and role output filtering; `go build ./...` passed; `go test ./...` passed
+Spec refs: spec.md module/import snippets checked and updated to canonical repo path
+Docs: README.md, spec.md, DEVPLAN.md, and HANDOFF.md updated for canonical module path and hardening notes
+Notes: QueuePlan gained additive BudgetExceeded field for callers that need to detect the first-item budget override.
+Commit: not committed
+<!-- /PROGRESS -->
+
+Scope: `go.mod`, internal imports, `pkg/citewise`, README/spec/handoff/devplan documentation.
+
+Dependencies: T10.4.
+
+Implementation:
+
+- Rename module and internal imports from the previous module path to `github.com/mojomast/citewiser`.
+- Use minor-only `go 1.24` directive.
+- Normalize edge types inside `foundationScore` before comparing prerequisite/cites edge kinds.
+- Add `QueuePlan.BudgetExceeded` and set it when the first-item budget override is used.
+- Parenthesize CSV edge-row detection, clamp legacy Difficulty and Trust ranges, and filter read items from `writeRoles`.
+
+Verification:
+
+- Run `go build ./...`.
+- Run `go test ./...`.
 
 ## Parallelization Map
 

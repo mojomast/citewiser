@@ -8,10 +8,10 @@ import (
 	"io"
 	"os"
 
-	"github.com/mojomast/citewiseussy/pkg/access"
-	"github.com/mojomast/citewiseussy/pkg/packer"
-	"github.com/mojomast/citewiseussy/pkg/rag"
-	"github.com/mojomast/citewiseussy/pkg/ragnode"
+	"github.com/mojomast/citewiser/pkg/access"
+	"github.com/mojomast/citewiser/pkg/packer"
+	"github.com/mojomast/citewiser/pkg/rag"
+	"github.com/mojomast/citewiser/pkg/ragnode"
 )
 
 // Run executes `citewise rag` subcommands.

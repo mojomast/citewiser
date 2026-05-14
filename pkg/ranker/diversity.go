@@ -1,6 +1,6 @@
 package ranker
 
-import "github.com/mojomast/citewiseussy/pkg/ragnode"
+import "github.com/mojomast/citewiser/pkg/ragnode"
 
 // Diversity returns a bounded bonus for selecting a node after already-selected
 // context. Reusing a source costs more than reusing a graph community because

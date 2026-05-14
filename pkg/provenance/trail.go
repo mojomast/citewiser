@@ -1,6 +1,6 @@
 package provenance
 
-import "github.com/mojomast/citewiseussy/pkg/ragnode"
+import "github.com/mojomast/citewiser/pkg/ragnode"
 
 const (
 	EdgeRetrieved    = "retrieved"

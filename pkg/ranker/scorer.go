@@ -4,9 +4,9 @@ import (
 	"math"
 	"strings"
 
-	"github.com/mojomast/citewiseussy/pkg/access"
-	"github.com/mojomast/citewiseussy/pkg/citewise"
-	"github.com/mojomast/citewiseussy/pkg/ragnode"
+	"github.com/mojomast/citewiser/pkg/access"
+	"github.com/mojomast/citewiser/pkg/citewise"
+	"github.com/mojomast/citewiser/pkg/ragnode"
 )
 
 func scoreNode(ctx access.Context, node ragnode.RAGNode, candidate ragnode.Candidate, analysis ragnode.RAGAnalysis, tokenBudget int, selected []ragnode.RAGNode) Score {

@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/mojomast/citewiseussy/pkg/rag"
+	"github.com/mojomast/citewiser/pkg/rag"
 )
 
 func main() {

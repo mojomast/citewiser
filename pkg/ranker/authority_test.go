@@ -4,8 +4,8 @@ import (
 	"math"
 	"testing"
 
-	"github.com/mojomast/citewiseussy/pkg/citewise"
-	"github.com/mojomast/citewiseussy/pkg/ragnode"
+	"github.com/mojomast/citewiser/pkg/citewise"
+	"github.com/mojomast/citewiser/pkg/ragnode"
 )
 
 func TestAuthorityFormulaAndClamp(t *testing.T) {

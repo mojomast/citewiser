@@ -102,17 +102,31 @@ CSV supports item columns such as id,title,year,type,topics,length_minutes,diffi
 }
 
 func writeRoles(w io.Writer, a Analysis, format string) {
-	rows := sortedItems(a)
+	rows := unreadItems(sortedItems(a))
 	if format == "json" {
+		roles := map[string]string{}
+		for _, it := range rows {
+			roles[it.ID] = a.Roles[it.ID]
+		}
 		enc := json.NewEncoder(w)
 		enc.SetIndent("", "  ")
-		_ = enc.Encode(a.Roles)
+		_ = enc.Encode(roles)
 		return
 	}
 	fmt.Fprintln(w, "Role map")
 	for _, it := range rows {
 		fmt.Fprintf(w, "- %s: %s — %s\n", it.ID, a.Roles[it.ID], it.Title)
 	}
+}
+
+func unreadItems(items []Item) []Item {
+	var out []Item
+	for _, it := range items {
+		if strings.ToLower(it.Status) != "read" {
+			out = append(out, it)
+		}
+	}
+	return out
 }
 
 func writeScores(w io.Writer, a Analysis, format string) {

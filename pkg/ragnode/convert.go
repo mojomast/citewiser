@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mojomast/citewiseussy/pkg/citewise"
+	"github.com/mojomast/citewiser/pkg/citewise"
 )
 
 // ToItem returns the embedded Citewise item, using Text as Notes when the

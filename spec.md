@@ -3,7 +3,7 @@ CitewiseRAG Technical Specification
 
 The problem CitewiseRAG solves is the assembly problem, not the retrieval problem: before an AI agent answers or acts, it needs the current authoritative record, controlling policy, user permissions, document section, metric source, prior decision, and a source trail that lets a human reviewer reconstruct why the agent acted. Vector search can find semantically related chunks, but it does not assemble a role-aware, access-controlled, provenance-tagged context package. CitewiseRAG is therefore specified as a deterministic Go knowledge layer that sits after upstream retrieval and prepares the context an agent needs before execution. This framing and the required package list come from the provided build brief.
 
-CitewiseRAG extends the existing github.com/mojomast/citewiseussy project instead of replacing it. The current code already has the core primitive this system needs: item/edge modeling, role classification, centrality, duplicate detection, hygiene reporting, prerequisite-aware readiness, and explainable scoring. The existing engine defines roles such as foundation, overview, bridge, counterpoint, stale-hype, duplicate, and curiosity-leaf, and it already scores items using goal fit, centrality, readiness, freshness, redundancy, and energy/time fit. The existing item and edge structs already provide a compact graph model with item metadata, trust, topics, normalized edge types, and confidence.
+CitewiseRAG extends the existing github.com/mojomast/citewiser project instead of replacing it. The current code already has the core primitive this system needs: item/edge modeling, role classification, centrality, duplicate detection, hygiene reporting, prerequisite-aware readiness, and explainable scoring. The existing engine defines roles such as foundation, overview, bridge, counterpoint, stale-hype, duplicate, and curiosity-leaf, and it already scores items using goal fit, centrality, readiness, freshness, redundancy, and energy/time fit. The existing item and edge structs already provide a compact graph model with item metadata, trust, topics, normalized edge types, and confidence.
 
 The new system keeps the old CLI behavior intact while adding a GraphRAG-oriented library layer: candidate intake, access gating, role classification, deterministic ranking, hygiene/corrective signals, context packing, provenance trails, HTTP/stdio integration, and memory write-back. It deliberately does not own embeddings, vector databases, document chunking, LLM extraction, LLM reranking, or graph community detection. Those belong upstream. CitewiseRAG owns the final, auditable act of assembling the right context in the right order.
 
@@ -28,7 +28,7 @@ Agent memory write-back	Persist successful context assemblies so agents do not r
 Access-control-aware retrieval	Permissions are enforced before scoring and packing.	Sensitivity, ApprovedBy, and caller clearance are hard gates.	Adopt as non-negotiable invariant.	pkg/access, pkg/packer, pkg/memory.
 3. Package Specifications
 3.1 Module Structure
-citewiseussy/
+citewiser/
   go.mod
   main.go                                  # Existing CLI entrypoint; unchanged.
   cmd/
@@ -109,7 +109,7 @@ package ragnode
 import (
 	"time"
 
-	"github.com/mojomast/citewiseussy/pkg/citewise"
+	"github.com/mojomast/citewiser/pkg/citewise"
 )
 
 type ChunkType string
@@ -255,7 +255,7 @@ Access control is a hard filter before scoring. It is not a ranking feature.
 
 package access
 
-import "github.com/mojomast/citewiseussy/pkg/ragnode"
+import "github.com/mojomast/citewiser/pkg/ragnode"
 
 type Clearance string
 
@@ -300,8 +300,8 @@ pkg/ranker implements the retrieval critic. It receives a candidate set, applies
 package ranker
 
 import (
-	"github.com/mojomast/citewiseussy/pkg/access"
-	"github.com/mojomast/citewiseussy/pkg/ragnode"
+	"github.com/mojomast/citewiser/pkg/access"
+	"github.com/mojomast/citewiser/pkg/ragnode"
 )
 
 type Score struct {
@@ -407,7 +407,7 @@ pkg/packer converts ranked nodes into an ordered ContextPlan.
 
 package packer
 
-import "github.com/mojomast/citewiseussy/pkg/ragnode"
+import "github.com/mojomast/citewiser/pkg/ragnode"
 
 type QueryType string
 
@@ -504,8 +504,8 @@ The existing HygieneReport already detects duplicates, orphans, stale items, and
 package hygiene
 
 import (
-	"github.com/mojomast/citewiseussy/pkg/packer"
-	"github.com/mojomast/citewiseussy/pkg/ragnode"
+	"github.com/mojomast/citewiser/pkg/packer"
+	"github.com/mojomast/citewiser/pkg/ragnode"
 )
 
 type EdgeSuggestion struct {
@@ -566,7 +566,7 @@ The router is deterministic. It does not call an LLM.
 
 package router
 
-import "github.com/mojomast/citewiseussy/pkg/packer"
+import "github.com/mojomast/citewiser/pkg/packer"
 
 type RetrievalMode string
 
@@ -616,7 +616,7 @@ Fallback → Factual, HybridBM25Dense, budget 4000.
 3.8 pkg/memory
 package memory
 
-import "github.com/mojomast/citewiseussy/pkg/packer"
+import "github.com/mojomast/citewiser/pkg/packer"
 
 type MemoryWriteBack interface {
 	StoreContextPlan(queryID string, plan packer.ContextPlan) error

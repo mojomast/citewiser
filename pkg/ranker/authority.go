@@ -1,6 +1,6 @@
 package ranker
 
-import "github.com/mojomast/citewiseussy/pkg/ragnode"
+import "github.com/mojomast/citewiser/pkg/ragnode"
 
 // Authority returns the bounded source authority score for a node within an
 // analysis, using incoming cites normalized by the analysis maximum.

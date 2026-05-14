@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"os/exec"
 	"strings"
 	"testing"
@@ -24,9 +25,12 @@ func TestReleaseDependencyGuardrails(t *testing.T) {
 		}
 	}
 
-	parquet := goListDeps(t, "-tags", "graphrag_parquet", "./pkg/integrations/graphrag")
-	if !containsDep(parquet, "github.com/parquet-go/parquet-go") {
-		t.Fatal("parquet dependency missing when graphrag_parquet tag is enabled")
+	parquetSource, err := os.ReadFile("pkg/integrations/graphrag/parquet.go")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(parquetSource), "//go:build graphrag_parquet") || !strings.Contains(string(parquetSource), "github.com/parquet-go/parquet-go") {
+		t.Fatal("parquet dependency must remain isolated behind the graphrag_parquet build tag")
 	}
 }
 

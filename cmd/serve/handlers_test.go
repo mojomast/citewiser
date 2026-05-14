@@ -9,12 +9,12 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/mojomast/citewiseussy/pkg/access"
-	"github.com/mojomast/citewiseussy/pkg/citewise"
-	"github.com/mojomast/citewiseussy/pkg/packer"
-	"github.com/mojomast/citewiseussy/pkg/rag"
-	"github.com/mojomast/citewiseussy/pkg/ragnode"
-	"github.com/mojomast/citewiseussy/pkg/router"
+	"github.com/mojomast/citewiser/pkg/access"
+	"github.com/mojomast/citewiser/pkg/citewise"
+	"github.com/mojomast/citewiser/pkg/packer"
+	"github.com/mojomast/citewiser/pkg/rag"
+	"github.com/mojomast/citewiser/pkg/ragnode"
+	"github.com/mojomast/citewiser/pkg/router"
 )
 
 func TestHealthAndRouterHandlers(t *testing.T) {

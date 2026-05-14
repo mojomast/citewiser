@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/mojomast/citewiseussy/pkg/rag"
+	"github.com/mojomast/citewiser/pkg/rag"
 )
 
 type stdioRequest struct {

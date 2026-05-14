@@ -1,6 +1,6 @@
 package hygiene
 
-import "github.com/mojomast/citewiseussy/pkg/packer"
+import "github.com/mojomast/citewiser/pkg/packer"
 
 func signalForScore(score, threshold float64) packer.HygieneSignal {
 	if score < threshold {

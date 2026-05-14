@@ -1,8 +1,8 @@
 package provenance
 
 import (
-	"github.com/mojomast/citewiseussy/pkg/access"
-	"github.com/mojomast/citewiseussy/pkg/ragnode"
+	"github.com/mojomast/citewiser/pkg/access"
+	"github.com/mojomast/citewiser/pkg/ragnode"
 )
 
 func RedactSourceTrail(ctx access.Context, controller access.Controller, analysis ragnode.RAGAnalysis, trail []ragnode.SourceHop) []ragnode.SourceHop {
