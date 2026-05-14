@@ -91,6 +91,20 @@ func TestRankerPenaltiesAndRationale(t *testing.T) {
 	}
 }
 
+func TestRankerOmitsEstimateRationaleForExplicitTokenCount(t *testing.T) {
+	node := rankNode("explicit", 1)
+	node.Text = "abcdefghijklmnopqrstuvwxyzabcdefghi"
+	node.TokenCount = 9
+	analysis := rankAnalysis([]ragnode.RAGNode{node}, map[string]float64{"explicit": 1})
+	set, err := NewRanker().Rank(access.Context{Clearance: access.ClearanceInternal}, analysis, 100)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if rationale := strings.Join(set.Ranked[0].Score.Rationale, " "); strings.Contains(rationale, "token count estimated") {
+		t.Fatalf("explicit token count should not be marked estimated: %q", rationale)
+	}
+}
+
 func TestRankerStableSortsByTotalThenNodeID(t *testing.T) {
 	analysis := rankAnalysis([]ragnode.RAGNode{rankNode("b", 1), rankNode("a", 1)}, map[string]float64{"a": 1, "b": 1})
 	set, err := NewRanker().Rank(access.Context{Clearance: access.ClearanceInternal}, analysis, 100)

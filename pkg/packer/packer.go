@@ -36,7 +36,7 @@ func (p DefaultPacker) Pack(analysis ragnode.RAGAnalysis, queryType QueryType, t
 	if r == nil {
 		r = ranker.NewRanker()
 	}
-	ranked, _ := r.Rank(access.Context{Clearance: access.Clearance(callerClearance), Attributes: map[string]string{"query_type": string(queryType), "allow_unapproved_agentic_nodes": "true"}}, analysis, tokenBudget)
+	ranked, _ := r.Rank(access.Context{Clearance: access.Clearance(callerClearance), Attributes: map[string]string{"query_type": string(queryType), access.AttrAllowUnapprovedAgenticNodes: "true"}}, analysis, tokenBudget)
 	plan := ContextPlan{QueryID: analysis.QueryID, QueryType: queryType, HygieneSignal: HygieneGreen}
 	for _, suppressed := range ranked.Suppressed {
 		plan.Suppressed = append(plan.Suppressed, SuppressedEntry{NodeID: suppressed.NodeID, Reason: suppressed.SuppressionReason, Score: suppressed.Total})

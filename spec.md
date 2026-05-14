@@ -1216,17 +1216,17 @@ Any HTTP router framework	n/a	Reject	net/http is enough for cmd/serve.
 Any JSON streaming library	n/a	Reject	encoding/json.Decoder is enough.	
 Any LLM SDK	n/a	Reject	No LLM calls inside CitewiseRAG.	
 15. Open Questions
-ApprovedBy semantics: Is ApprovedBy a list of trusted approvers of the source, or an allow-list of principals allowed to see the node? This spec treats it as source approval, while Sensitivity handles visibility.
-Caller identity model: Should access use only clearance and groups, or should it support attribute-based rules such as region, customer account, department, and purpose?
-Token counting: Should token counts be injected by the upstream model tokenizer, or is the len(text)/4 fallback acceptable for MVP?
+ApprovedBy semantics: Resolved for MVP by T10.1. ApprovedBy is a list of trusted approvers of the source, not an allow-list of principals allowed to see the node. Sensitivity, clearance, and trusted approver checks handle visibility.
+Caller identity model: Resolved for MVP by T10.1. Core access uses clearance, groups for caller context, trusted approvers, and explicit package-defined attribute flags only. Region, customer account, department, and purpose ABAC remain caller-owned until a later task defines them.
+Token counting: Resolved for MVP by T10.2. Upstream model tokenizer counts are preferred. If TokenCount is zero and text is present, CitewiseRAG uses the deterministic byte-length fallback ceil(len(text)/4) and marks the estimate in ranker rationale.
 GraphRAG schema version: Which Microsoft GraphRAG output version will be the first supported import fixture?
-Table provenance: Should Locator.TableID, RowStart, and RowEnd be mandatory for metric-bearing nodes?
+Table provenance: Resolved for MVP by T10.3. Locator.TableID, RowStart, and RowEnd are optional unless present in upstream data, but must be preserved through SourceRef and packed slot sources when supplied.
 Memory acceptance signal: Should write-back occur when the plan is generated, when the LLM answer is accepted, or when the agent action succeeds?
 Calibration set: What golden dataset should be used to tune the scoring constants?
 Red-plan behavior: Should cmd/serve /pack return HTTP 200 with HygieneSignal=red, or HTTP 409 with a corrective retrieval payload?
 PPR scale limits: What graph size should trigger optional Gonum or external graph-store delegation?
-Suppression audit level: Should ordinary callers see counts only for access-control suppressions, while admins see node IDs?
-Agentic fail-closed policy: Are there domains where Agentic mode may proceed without a permission record, or should this always be impossible?
+Suppression audit level: Resolved for MVP by T10.1. Ordinary callers receive redacted access-control suppression entries with node ID, reason, and detail only. Admin-expanded audit is out of core scope.
+Agentic fail-closed policy: Resolved for MVP by T10.1. Agentic mode may not proceed without a permitted permission record unless a future domain-specific policy explicitly changes this spec.
 Community summary trust: Should GraphRAG/LightRAG-generated summaries inherit trust from underlying sources, or have a separate generated-content trust penalty?
-Cross-encoder leakage: Will upstream rerankers run in the same trust boundary, or does CitewiseRAG need a pre-rerank redaction utility?
+Cross-encoder leakage: Resolved for MVP by T10.4. Upstream still owns coarse ACL before reranking by default, CitewiseRAG re-gates every node, and callers that need an in-process coarse ACL pass can use the hybrid pre-rerank redaction helper.
 CLI additions: Should new commands be added as citewise rag pack and citewise rag route, or should RAG remain library/HTTP only for the first release?

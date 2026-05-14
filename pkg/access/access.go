@@ -19,6 +19,18 @@ const (
 	ReasonAccessControl = "access-control"
 )
 
+const (
+	// AttrAllowUnapprovedAgenticNodes lets internal validation paths inspect
+	// unapproved controlling nodes. Production Agentic packing remains fail-closed.
+	AttrAllowUnapprovedAgenticNodes = "allow_unapproved_agentic_nodes"
+)
+
+const (
+	// SuppressionAuditRedacted is the MVP audit level for ordinary callers:
+	// suppressed access-control entries may expose IDs, reasons, and details only.
+	SuppressionAuditRedacted = "redacted"
+)
+
 type Context struct {
 	CallerID         string            `json:"caller_id"`
 	Groups           []string          `json:"groups,omitempty"`
@@ -106,5 +118,5 @@ func requiresAgenticApproval(node ragnode.RAGNode) bool {
 }
 
 func allowUnapprovedAgenticNodes(ctx Context) bool {
-	return ctx.Attributes != nil && ctx.Attributes["allow_unapproved_agentic_nodes"] == "true"
+	return ctx.Attributes != nil && ctx.Attributes[AttrAllowUnapprovedAgenticNodes] == "true"
 }

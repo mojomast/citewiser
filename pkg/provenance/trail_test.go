@@ -30,6 +30,22 @@ func TestBuildSourceRefFromNodeMetadata(t *testing.T) {
 	}
 }
 
+func TestBuildSourceRefPreservesTableLocatorWhenSupplied(t *testing.T) {
+	node := ragnode.RAGNode{
+		Item: citewise.Item{ID: "metric", Source: "warehouse"},
+		Locator: ragnode.Locator{
+			DocumentID: "doc-metrics",
+			TableID:    "table-revenue",
+			RowStart:   7,
+			RowEnd:     9,
+		},
+	}
+	ref := BuildSourceRef(node)
+	if ref.Locator.TableID != "table-revenue" || ref.Locator.RowStart != 7 || ref.Locator.RowEnd != 9 {
+		t.Fatalf("table locator not preserved: %+v", ref.Locator)
+	}
+}
+
 func TestBuildSourceTrailDirectRetrievedAndRequiredSlot(t *testing.T) {
 	node := ragnode.RAGNode{Item: citewise.Item{ID: "n1"}, ChunkType: ragnode.ChunkDocument}
 	candidate := ragnode.Candidate{NodeID: "n1", QueryRelevance: 0.87}

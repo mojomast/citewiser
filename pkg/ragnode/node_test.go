@@ -135,6 +135,9 @@ func TestEstimateTokenCount(t *testing.T) {
 
 func TestEffectiveTokenCountPrefersExplicitCount(t *testing.T) {
 	n := RAGNode{Text: "abcdefghi", TokenCount: 42}
+	if n.UsesEstimatedTokenCount() {
+		t.Fatal("explicit token count should not be reported as estimated")
+	}
 	if got := n.EffectiveTokenCount(); got != 42 {
 		t.Fatalf("explicit token count got %d", got)
 	}
@@ -143,10 +146,18 @@ func TestEffectiveTokenCountPrefersExplicitCount(t *testing.T) {
 	}
 
 	n.TokenCount = 0
+	if !n.UsesEstimatedTokenCount() {
+		t.Fatal("missing token count with text should be reported as estimated")
+	}
 	if got := n.EffectiveTokenCount(); got != 3 {
 		t.Fatalf("estimated token count got %d", got)
 	}
 	if n.TokenCount != 0 {
 		t.Fatalf("EffectiveTokenCount mutated TokenCount to %d", n.TokenCount)
+	}
+
+	n.Text = ""
+	if n.UsesEstimatedTokenCount() {
+		t.Fatal("empty text should not report an estimated token count")
 	}
 }

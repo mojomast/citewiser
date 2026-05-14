@@ -14,7 +14,7 @@ func rationaleForScore(ctx access.Context, node ragnode.RAGNode, score Score, an
 		fmt.Sprintf("graph importance %.2f", score.GraphImportance),
 		fmt.Sprintf("token budget fit %.2f", score.TokenBudgetFit),
 	}
-	if node.TokenCount == 0 && node.Text != "" {
+	if node.UsesEstimatedTokenCount() {
 		rationale = append(rationale, fmt.Sprintf("token count estimated as %d", node.EffectiveTokenCount()))
 	}
 	if hasUnknownEdgeFallback(node.ID, analysis) {

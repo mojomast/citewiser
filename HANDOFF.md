@@ -61,35 +61,47 @@ Completed task commits:
 - `T09.1` RAG CLI rank and hygiene commands: `8a31d95`
 - `T09.2` RAG CLI stdin input support: `8a31d95`
 - `T09.3` RAG CLI golden stdout fixtures: `8a31d95`
+- `T10.1` access policy defaults: not committed in current slice
+- `T10.2` token counting contract: not committed in current slice
+- `T10.3` table provenance preservation: not committed in current slice
+- `T10.4` pre-rerank redaction helper: not committed in current slice
 
 Latest ledger-only hash updates exist after several task commits; use `git log --oneline -10` for exact current HEAD.
 
-The working tree is expected to be clean after the T09 ledger hash update commit and push.
+The working tree contains completed, verified T10.1-T10.4 changes that are not committed because the user did not explicitly request a commit.
 
 ## Next Work
 
-Earliest unblocked task after accepting the current working tree changes: none. All planned tasks through `T09.3` are implemented and verified.
+Earliest unblocked task after accepting the current working tree changes: none. All planned tasks through `T10.4` are implemented and verified.
 
 Primary files to create/update:
 
-- No remaining planned implementation tasks.
+- No remaining planned implementation tasks after T10.4.
 - If work continues, use `spec.md` open questions and release feedback to add new `DEVPLAN.md` tasks before coding.
 
 Relevant `DEVPLAN.md` refs:
 
-- `T09.1`, `T09.2`, and `T09.3`: complete in `DEVPLAN.md`.
-- Open decisions remain at the end of `DEVPLAN.md` for post-MVP/product follow-up.
+- `T10.1`, `T10.2`, `T10.3`, and `T10.4`: complete in `DEVPLAN.md`.
+- Open decisions remain at the end of `DEVPLAN.md` for post-MVP/product follow-up: D03, D04, D08, D09, D10, and D13 are still unresolved defaults.
 
 Relevant `spec.md` refs:
 
 - Test strategy: around lines 1136-1201.
 - Dependency guidance: around lines 1203-1217.
-- Open questions for future product decisions: around lines 1218-1232.
+- Open questions for future product decisions: around lines 1218-1232. T10 resolved ApprovedBy semantics, caller identity model, token counting, table provenance, suppression audit level, Agentic fail-closed policy, and cross-encoder leakage.
 
 Concrete next instructions:
 
 1. If new work is requested, add new anchored tasks to `DEVPLAN.md` before implementation.
 2. Resolve open product questions in `spec.md`/`DEVPLAN.md` before changing behavior that depends on them.
+
+T10.1/T10.2/T10.3/T10.4 design decisions made in the current uncommitted slice:
+
+- Access policy defaults are explicit: `ApprovedBy` is source approval, ordinary suppression audit is redacted ID/reason/detail only, broader ABAC remains caller-owned, and Agentic remains fail-closed without a permitted permission record.
+- `access.AttrAllowUnapprovedAgenticNodes` replaces raw string usage for the internal validation escape hatch; production Agentic packing still suppresses unapproved controlling nodes.
+- Token counting prefers upstream `TokenCount`; `ragnode.UsesEstimatedTokenCount` identifies fallback usage, and ranker rationale marks `ceil(len(Text)/4)` estimates.
+- Table locator fields remain optional but are preserved through `provenance.BuildSourceRef` and packed slot source refs when supplied.
+- `hybrid.RedactForReranker` lets callers drop unauthorized nodes, candidates, and edges before a reranker handoff when their trust boundary requires it; downstream access gates still re-run.
 
 T03.1 design decisions made in the current uncommitted slice:
 
@@ -178,6 +190,11 @@ Verification from the current slice:
 - `go run . rag hygiene --file testdata/api_examples/pack_request.json` passed.
 - `go run . rag route --file - < testdata/api_examples/pack_request.json` passed.
 - `go test ./...` passed.
+- `go test ./pkg/access` passed for T10.1.
+- `go test ./pkg/ragnode ./pkg/ranker` passed for T10.2.
+- `go test ./pkg/provenance ./pkg/packer` passed for T10.3.
+- `go test ./pkg/integrations/hybrid` passed for T10.4.
+- `go test ./...` passed after each T10 slice.
 
 Parallel option after claiming only one task yourself:
 

@@ -90,6 +90,12 @@ func EstimateTokenCount(text string) int {
 	return (len(text) + 3) / 4
 }
 
+// UsesEstimatedTokenCount reports whether EffectiveTokenCount will use the
+// deterministic MVP fallback rather than an upstream tokenizer-provided count.
+func (n RAGNode) UsesEstimatedTokenCount() bool {
+	return n.TokenCount == 0 && n.Text != ""
+}
+
 func (n RAGNode) EffectiveTokenCount() int {
 	if n.TokenCount > 0 {
 		return n.TokenCount

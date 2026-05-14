@@ -83,6 +83,19 @@ func TestPackSuppressesAccessDeniedNodes(t *testing.T) {
 	}
 }
 
+func TestPackPreservesTableLocatorInSlotSource(t *testing.T) {
+	node := slotNode("metric", ragnode.ChunkSection, citewise.RoleFoundation)
+	node.Locator = ragnode.Locator{DocumentID: "doc-metrics", TableID: "table-revenue", RowStart: 7, RowEnd: 9}
+	plan := NewPacker().Pack(packAnalysis([]ragnode.RAGNode{node}), QueryFactual, 1000, string(ragnode.SensitivityInternal))
+	if len(plan.Slots) != 1 {
+		t.Fatalf("slot count got %d: %+v", len(plan.Slots), plan)
+	}
+	locator := plan.Slots[0].Source.Locator
+	if locator.TableID != "table-revenue" || locator.RowStart != 7 || locator.RowEnd != 9 {
+		t.Fatalf("table locator not preserved in slot source: %+v", locator)
+	}
+}
+
 func allSlotNodes() []ragnode.RAGNode {
 	return []ragnode.RAGNode{
 		slotNode("overview", ragnode.ChunkCommunitySummary, citewise.RoleOverview),

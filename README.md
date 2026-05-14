@@ -30,11 +30,19 @@ CitewiseRAG does not generate embeddings, chunk documents, manage vector databas
 
 ## Upstream Handoff
 
-Upstream retrieval systems should send `ragnode.CandidateSet` data with node IDs, access metadata, source versions, evidence paths where available, and normalized relevance features. Cross-encoder or ColBERT-style rerankers must run after coarse ACL filtering and must not receive unauthorized text; CitewiseRAG still reapplies hard access gates before ranking and packing.
+Upstream retrieval systems should send `ragnode.CandidateSet` data with node IDs, access metadata, source versions, evidence paths where available, and normalized relevance features. Cross-encoder or ColBERT-style rerankers must run after coarse ACL filtering and must not receive unauthorized text; CitewiseRAG still reapplies hard access gates before ranking and packing. Callers that need CitewiseRAG to enforce the pre-rerank coarse ACL boundary can use `hybrid.RedactForReranker` before sending handoff text to a reranker.
+
+Upstream tokenizer-provided `TokenCount` values are preferred. When `TokenCount` is zero and text is present, `ragnode.EffectiveTokenCount` uses the deterministic MVP fallback `ceil(len(text)/4)` and the ranker rationale marks the count as estimated.
+
+## Access Policy
+
+`pkg/access` treats `ApprovedBy` as source approval, not a viewer allow-list. Visibility is gated by sensitivity versus caller clearance plus trusted approver checks for confidential or restricted approved sources. Ordinary access-control suppressions use the redacted audit level: node ID, reason, and detail only, never text, title, URL, source, or source trail. Agentic controlling nodes remain fail-closed unless an internal validation path sets `access.AttrAllowUnapprovedAgenticNodes`.
 
 ## Downstream Obligations
 
 Downstream agents receive only `packer.ContextPlan`. Answers or action logs must preserve `query_id`, cited slot `node_id` values, source/origin, version, observed or updated time, locators when present, evidence path, suppressed counts by reason, hygiene signal, and critique summary.
+
+Table provenance is optional for MVP inputs, but CitewiseRAG preserves `Locator.TableID`, `RowStart`, and `RowEnd` through source refs and packed slots whenever upstream supplies them.
 
 ## Development
 

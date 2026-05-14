@@ -180,6 +180,13 @@ Goal: make the additive `citewise rag` namespace cover the same core operations 
 
 Exit gate: `rag route`, `rag rank`, `rag pack`, and `rag hygiene` accept file/stdin input, golden stdout fixtures pass, legacy commands still pass, and `go test ./...` passes.
 
+<!-- ANCHOR:M10-DECISION-HARDENING -->
+### M10 Decision Hardening
+
+Goal: turn unresolved MVP defaults into explicit, tested caller-facing behavior without broadening core scope or adding infrastructure dependencies.
+
+Exit gate: the first four hardening slices resolve their referenced open decisions in docs/tests, user-visible behavior is documented, and `go test ./...` passes.
+
 ## Work Packets
 
 <!-- TASK:T00.1-BOOTSTRAP-MODULE -->
@@ -1030,6 +1037,115 @@ Verification:
 
 - Run golden CLI tests and `go test ./...`.
 
+<!-- TASK:T10.1-ACCESS-POLICY-CONSTANTS -->
+### [x] T10.1 Make Access Policy Defaults Explicit
+
+<!-- PROGRESS:opencode:T10.1-ACCESS-POLICY-CONSTANTS:2026-05-14T20:45Z -->
+Status: [x]
+Owner: opencode
+Evidence: added exported access policy constants and tests; documented access defaults in README and spec; `go test ./pkg/access` passed; `go test ./...` passed
+Spec refs: spec.md sections 3.3, 8.1, and open questions for ApprovedBy semantics, caller identity, suppression audit, and Agentic fail-closed checked
+Docs: pkg/access/doc.go, README.md, and spec.md updated
+Notes: none
+Commit: not committed
+<!-- /PROGRESS -->
+
+Scope: `pkg/access`, README/spec decision notes, access tests.
+
+Dependencies: T09.3.
+
+Implementation:
+
+- Add exported constants for access attribute keys and suppression audit policy so callers stop relying on magic strings.
+- Document that `ApprovedBy` is source approval, not a viewer allow-list; clearance and trusted approvers remain the MVP gates.
+- Keep region/account/department/purpose ABAC out of core unless a later task changes the spec.
+- Keep Agentic fail-closed default explicit and preserve the existing packer escape hatch only for internal validation paths.
+
+Verification:
+
+- Run `go test ./pkg/access` and `go test ./...`.
+
+<!-- TASK:T10.2-TOKEN-COUNTING-CONTRACT -->
+### [x] T10.2 Lock Token Counting Contract
+
+<!-- PROGRESS:opencode:T10.2-TOKEN-COUNTING-CONTRACT:2026-05-14T20:45Z -->
+Status: [x]
+Owner: opencode
+Evidence: added ragnode.UsesEstimatedTokenCount helper, ranker rationale regression, and token-count tests; `go test ./pkg/ragnode ./pkg/ranker` passed; `go test ./...` passed
+Spec refs: spec.md sections 3.2, 3.4, and token-counting open question checked
+Docs: README.md and spec.md updated
+Notes: none
+Commit: not committed
+<!-- /PROGRESS -->
+
+Scope: `pkg/ragnode`, `pkg/ranker`, README/spec decision notes, tests.
+
+Dependencies: T10.1.
+
+Implementation:
+
+- Resolve the token-counting default as upstream-tokenizer first, deterministic byte-length fallback second.
+- Add/adjust tests that prove explicit `TokenCount` wins and fallback rationale is present when counts are estimated.
+- Document that fallback is an MVP approximation and not a tokenizer replacement.
+
+Verification:
+
+- Run `go test ./pkg/ragnode ./pkg/ranker` and `go test ./...`.
+
+<!-- TASK:T10.3-TABLE-PROVENANCE-REGRESSION -->
+### [x] T10.3 Lock Table Provenance Preservation
+
+<!-- PROGRESS:opencode:T10.3-TABLE-PROVENANCE-REGRESSION:2026-05-14T20:45Z -->
+Status: [x]
+Owner: opencode
+Evidence: added table-locator preservation tests for provenance source refs and packed slot sources; `go test ./pkg/provenance ./pkg/packer` passed; `go test ./...` passed
+Spec refs: spec.md sections 3.2, 7.5, 8.2, and table-provenance open question checked
+Docs: README.md and spec.md updated
+Notes: none
+Commit: not committed
+<!-- /PROGRESS -->
+
+Scope: `pkg/provenance`, `pkg/packer` if needed, README/spec decision notes, tests.
+
+Dependencies: T10.2.
+
+Implementation:
+
+- Resolve table provenance as optional but must-preserve when supplied.
+- Add regression coverage for `Locator.TableID`, `RowStart`, and `RowEnd` through source refs and packed slots.
+- Do not make table locators mandatory for all metric-bearing nodes until a concrete metric schema exists.
+
+Verification:
+
+- Run `go test ./pkg/provenance ./pkg/packer` and `go test ./...`.
+
+<!-- TASK:T10.4-CROSS-ENCODER-REDACTION -->
+### [x] T10.4 Add Pre-Rerank Redaction Helper
+
+<!-- PROGRESS:opencode:T10.4-CROSS-ENCODER-REDACTION:2026-05-14T20:45Z -->
+Status: [x]
+Owner: opencode
+Evidence: added hybrid.RedactForReranker helper and tests for unauthorized node/candidate/edge removal; `go test ./pkg/integrations/hybrid` passed; `go test ./...` passed
+Spec refs: spec.md sections 7.3, 7.4, 8.1, and cross-encoder leakage open question checked
+Docs: pkg/integrations/hybrid/doc.go, README.md, and spec.md updated
+Notes: none
+Commit: not committed
+<!-- /PROGRESS -->
+
+Scope: `pkg/integrations/hybrid`, README/spec decision notes, tests.
+
+Dependencies: T10.3.
+
+Implementation:
+
+- Add a stdlib-only helper for callers that need to prepare a cross-encoder handoff inside a stricter trust boundary.
+- The helper must apply the existing access controller, remove unauthorized candidates/nodes/edges, and preserve only safe relevance metadata.
+- Keep the existing default boundary documented: upstream owns coarse ACL, CitewiseRAG re-gates every node.
+
+Verification:
+
+- Run `go test ./pkg/integrations/hybrid` and `go test ./...`.
+
 ## Parallelization Map
 
 Safe early parallel work after T00.1/T00.2:
@@ -1055,16 +1171,16 @@ Serial dependencies:
 ## Open Decisions To Resolve Early
 
 <!-- DECISION:D01-APPROVEDBY -->
-### [?] D01 ApprovedBy Semantics
+### [x] D01 ApprovedBy Semantics
 
-Default: treat `ApprovedBy` as source approval, not viewer allow-list. `Sensitivity` and future ABAC rules handle visibility.
+Resolved by T10.1: treat `ApprovedBy` as source approval, not viewer allow-list. `Sensitivity`, clearance, and trusted approver checks handle MVP visibility.
 
 Needed before: T02.1, T03.1.
 
 <!-- DECISION:D02-ACCESS-ATTRIBUTES -->
-### [?] D02 Caller Attribute Rules
+### [x] D02 Caller Attribute Rules
 
-Default: MVP supports clearance, groups, trusted approvers, and raw attributes only for specified flags. Do not implement region/account/department ABAC until required.
+Resolved by T10.1: MVP supports clearance, groups for caller context, trusted approvers, and exported package attribute keys only. Region/account/department/purpose ABAC remains caller-owned until required.
 
 Needed before: T02.1.
 
@@ -1090,16 +1206,16 @@ Resolved: MVP initially exposed library and optional HTTP only. After compatibil
 Implemented by: T08.3, T09.1, T09.2, and T09.3.
 
 <!-- DECISION:D06-TOKEN-COUNTING -->
-### [?] D06 Token Counting Source
+### [x] D06 Token Counting Source
 
-Default: upstream tokenizer-provided counts are preferred; `ceil(len(Text)/4)` remains the deterministic MVP fallback and must be marked in scoring rationale.
+Resolved by T10.2: upstream tokenizer-provided counts are preferred; `ceil(len(Text)/4)` remains the deterministic MVP fallback and is marked in scoring rationale.
 
 Needed before: T01.1, T03.1.
 
 <!-- DECISION:D07-TABLE-PROVENANCE -->
-### [?] D07 Table Provenance Requirements
+### [x] D07 Table Provenance Requirements
 
-Default: `Locator.TableID`, `RowStart`, and `RowEnd` are optional unless present in upstream data; metric-bearing node tests should preserve them when supplied.
+Resolved by T10.3: `Locator.TableID`, `RowStart`, and `RowEnd` are optional unless present in upstream data and are preserved through source refs and packed slot sources when supplied.
 
 Needed before: T02.2, T07.2.
 
@@ -1125,16 +1241,16 @@ Default: MVP uses custom in-core PPR for all tests; document observed performanc
 Needed before: T03.2, T07.3.
 
 <!-- DECISION:D11-SUPPRESSION-AUDIT -->
-### [?] D11 Suppression Audit Level
+### [x] D11 Suppression Audit Level
 
-Default: ordinary responses expose redacted access-control node IDs, reasons, and details only; no text, title, URL, or source trail. Admin-specific expanded audit is out of MVP scope.
+Resolved by T10.1: ordinary responses expose redacted access-control node IDs, reasons, and details only; no text, title, URL, or source trail. Admin-specific expanded audit is out of MVP scope.
 
 Needed before: T02.1, T03.3, T04.1.
 
 <!-- DECISION:D12-AGENTIC-FAIL-CLOSED -->
-### [?] D12 Agentic Fail-Closed Exceptions
+### [x] D12 Agentic Fail-Closed Exceptions
 
-Default: Agentic mode may not proceed without a permitted permission record unless a future domain-specific policy explicitly changes the spec.
+Resolved by T10.1: Agentic mode may not proceed without a permitted permission record unless a future domain-specific policy explicitly changes the spec.
 
 Needed before: T04.1, T06.2.
 
@@ -1146,9 +1262,9 @@ Default: community summaries use the specified chunk-type authority prior and ma
 Needed before: T03.1, T05.1.
 
 <!-- DECISION:D14-CROSS-ENCODER-LEAKAGE -->
-### [?] D14 Cross-Encoder Leakage Boundary
+### [x] D14 Cross-Encoder Leakage Boundary
 
-Default: upstream rerankers are responsible for coarse ACL before reranking; CitewiseRAG re-gates every node and documents this boundary. Add a pre-rerank redaction utility only if callers require it.
+Resolved by T10.4: upstream rerankers remain responsible for coarse ACL by default, CitewiseRAG re-gates every node, and callers that require an in-process coarse ACL pass can use the hybrid pre-rerank redaction helper.
 
 Needed before: T05.3, T07.2.
 

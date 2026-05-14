@@ -57,7 +57,7 @@ func TestAgenticNodeApprovalRule(t *testing.T) {
 		if decision.Allowed {
 			t.Fatalf("%s without approval should be denied", chunkType)
 		}
-		allowed := controller.CanSeeNode(Context{Clearance: ClearanceInternal, Attributes: map[string]string{"allow_unapproved_agentic_nodes": "true"}}, node)
+		allowed := controller.CanSeeNode(Context{Clearance: ClearanceInternal, Attributes: map[string]string{AttrAllowUnapprovedAgenticNodes: "true"}}, node)
 		if !allowed.Allowed {
 			t.Fatalf("%s with escape hatch should be allowed: %+v", chunkType, allowed)
 		}
@@ -66,6 +66,15 @@ func TestAgenticNodeApprovalRule(t *testing.T) {
 		if !approved.Allowed {
 			t.Fatalf("%s with approval should be allowed: %+v", chunkType, approved)
 		}
+	}
+}
+
+func TestAccessPolicyConstantsDocumentDefaults(t *testing.T) {
+	if AttrAllowUnapprovedAgenticNodes != "allow_unapproved_agentic_nodes" {
+		t.Fatalf("unexpected attribute key %q", AttrAllowUnapprovedAgenticNodes)
+	}
+	if SuppressionAuditRedacted != "redacted" {
+		t.Fatalf("unexpected suppression audit level %q", SuppressionAuditRedacted)
 	}
 }
 
