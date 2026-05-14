@@ -2,17 +2,6 @@ package ragnode
 
 import "time"
 
-type Edge struct {
-	SourceID   string    `json:"source_id"`
-	TargetID   string    `json:"target_id"`
-	Type       string    `json:"type"`
-	Confidence float64   `json:"confidence,omitempty"`
-	Note       string    `json:"note,omitempty"`
-	Origin     string    `json:"origin,omitempty"`
-	Version    string    `json:"version,omitempty"`
-	ObservedAt time.Time `json:"observed_at,omitempty"`
-}
-
 type MethodScore struct {
 	Method string  `json:"method"`
 	Rank   int     `json:"rank"`

@@ -255,7 +255,17 @@ Verification:
 - Tests for JSON tags, zero-value safety, and token estimate behavior.
 
 <!-- TASK:T01.2-EDGE-ONTOLOGY -->
-### [ ] T01.2 Implement Edge Ontology Normalization
+### [x] T01.2 Implement Edge Ontology Normalization
+
+<!-- PROGRESS:opencode:T01.2-EDGE-ONTOLOGY:2026-05-14T18:02Z -->
+Status: [x]
+Owner: opencode
+Evidence: added edge ontology constants, alias normalization, weights, raw type note preservation, and tests; `go test ./pkg/ragnode` passed; `go test ./...` passed
+Spec refs: spec.md section 6 implemented
+Docs: not needed: public constants/functions mirror spec edge ontology
+Notes: unknown edge types normalize to related-to and can be detected with EdgeTypeKnown/NormalizeEdge.Known for later ranker rationale
+Commit: not committed
+<!-- /PROGRESS -->
 
 Scope: `pkg/ragnode/edge.go`.
 
