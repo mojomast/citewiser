@@ -264,7 +264,7 @@ Evidence: added edge ontology constants, alias normalization, weights, raw type 
 Spec refs: spec.md section 6 implemented
 Docs: not needed: public constants/functions mirror spec edge ontology
 Notes: unknown edge types normalize to related-to and can be detected with EdgeTypeKnown/NormalizeEdge.Known for later ranker rationale
-Commit: not committed
+Commit: 8a80294
 <!-- /PROGRESS -->
 
 Scope: `pkg/ragnode/edge.go`.
