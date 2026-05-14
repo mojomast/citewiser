@@ -80,6 +80,28 @@ func TestScoringPenalizesDuplicates(t *testing.T) {
 	}
 }
 
+func TestExplainScorePhrases(t *testing.T) {
+	cases := []struct {
+		name  string
+		score Score
+		want  string
+	}{
+		{name: "duplicate", score: Score{Role: RoleDuplicate, RedundancyPenalty: .75}, want: "looks redundant"},
+		{name: "low readiness", score: Score{Role: RoleFoundation, Readiness: .40}, want: "may need prerequisites first"},
+		{name: "goal fit", score: Score{Role: RoleFoundation, GoalFit: .70}, want: "strongly matches the goal"},
+		{name: "centrality", score: Score{Role: RoleBridge, Centrality: .70}, want: "unlocks several connected items"},
+		{name: "energy time", score: Score{Role: RoleOverview, EnergyTimeFit: .80}, want: "fits the current time/energy budget"},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			got := ExplainScore(Item{Title: "Test Item"}, tc.score)
+			if !strings.Contains(got, tc.want) {
+				t.Fatalf("ExplainScore() = %q, want phrase %q", got, tc.want)
+			}
+		})
+	}
+}
+
 func TestReadinessAccountsForUnreadPrerequisites(t *testing.T) {
 	a := Analyze(fixtureBacklog(), fixtureBacklog().Goal)
 	if a.Scores["advanced"].Readiness >= .75 {

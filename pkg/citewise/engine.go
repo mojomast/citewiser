@@ -19,6 +19,11 @@ const (
 	RoleCuriosityLeaf = "curiosity-leaf"
 )
 
+const (
+	staleHypeMinAge    = 7
+	staleCurrentMinAge = 12
+)
+
 type Analysis struct {
 	Backlog    Backlog
 	Items      map[string]Item
@@ -147,6 +152,8 @@ func edgeWeight(t string) float64 {
 }
 
 func classify(it Item, a Analysis, goal Goal) string {
+	// Edges are pre-normalized by normalizeBacklog; normEdgeType here is
+	// a safety net for any manually constructed Analysis values in tests.
 	if inDupCluster(it.ID, a.Duplicates) || hasEdgeType(it.ID, a, "duplicate") {
 		return RoleDuplicate
 	}
@@ -205,10 +212,10 @@ func isOverview(it Item) bool {
 func isStaleHype(it Item, now int) bool {
 	text := strings.ToLower(it.Title + " " + it.Notes)
 	hypeCue := strings.Contains(text, "hype") || strings.Contains(text, "trend") || strings.Contains(text, "hot take") || strings.Contains(text, "breakthrough")
-	if it.Year > 0 && now-it.Year >= 7 && (hypeCue || it.RecommendedCount >= 3) {
+	if it.Year > 0 && now-it.Year >= staleHypeMinAge && (hypeCue || it.RecommendedCount >= 3) {
 		return true
 	}
-	if it.Year > 0 && now-it.Year >= 12 && strings.Contains(text, "current") {
+	if it.Year > 0 && now-it.Year >= staleCurrentMinAge && strings.Contains(text, "current") {
 		return true
 	}
 	return false
@@ -217,7 +224,7 @@ func isStaleHype(it Item, now int) bool {
 func foundationScore(it Item, a Analysis) float64 {
 	incomingPrereq := 0
 	incomingCites := 0
-	for _, e := range a.EdgesOut[it.ID] {
+	for _, e := range a.EdgesIn[it.ID] {
 		if e.Type == "prerequisite" {
 			incomingPrereq++
 		}
@@ -286,7 +293,7 @@ func goalFit(it Item, goal Goal) float64 {
 		}
 	}
 	if matches == 0 {
-		return .35
+		return .10
 	}
 	return clamp01(.35 + float64(matches)*.18)
 }
@@ -399,6 +406,8 @@ func PlanQueue(a Analysis, budget, limit int) QueuePlan {
 			plan.Skipped = append(plan.Skipped, c)
 			continue
 		}
+		// Always include at least one item regardless of budget, so the caller
+		// always gets an actionable recommendation.
 		if used+c.Item.LengthMinutes <= budget || len(plan.Entries) == 0 {
 			plan.Entries = append(plan.Entries, c)
 			used += c.Item.LengthMinutes
