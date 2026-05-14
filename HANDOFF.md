@@ -67,7 +67,7 @@ Completed task commits:
 - `T10.4` pre-rerank redaction helper: `3f4acab`
 - `T11.1` module path and legacy Citewise hardening: `aafd54a`
 - `T12.1` GovOne library surface hardening: `97533d9`
-- `T12.2` pre-integration GovOne fixes: pending commit
+- `T12.2` pre-integration GovOne fixes: `834255f`
 
 Latest ledger-only hash updates exist after several task commits; use `git log --oneline -10` for exact current HEAD.
 
@@ -85,7 +85,7 @@ Primary files to create/update:
 Relevant `DEVPLAN.md` refs:
 
 - `T12.1`: complete in `DEVPLAN.md`.
-- `T12.2`: complete in `DEVPLAN.md`; commit hash pending until this slice is committed.
+- `T12.2`: complete in `DEVPLAN.md`.
 - Open decisions remain at the end of `DEVPLAN.md` for post-MVP/product follow-up: D03, D04, D08, D09, D10, and D13 are still unresolved defaults.
 
 Relevant `spec.md` refs:

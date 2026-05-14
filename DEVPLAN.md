@@ -1229,7 +1229,7 @@ Evidence: moved access deny helper, added edge endpoint-sensitivity access helpe
 Spec refs: GovOne pre-integration hardening request; spec.md access-control and legacy compatibility constraints checked
 Docs: README.md Access Policy, pkg/citewise package docs, ContextFromGovOne doc comment, DEVPLAN.md, and HANDOFF.md updated
 Notes: `CanUseEdgeBetween` enforces endpoint sensitivities because `ragnode.Edge` carries no tenant field; tenant mismatches remain enforced by node-level `CanSeeNode`
-Commit: pending
+Commit: 834255f
 <!-- /PROGRESS -->
 
 Scope: `pkg/access`, `pkg/citewise`, docs, and tests.
