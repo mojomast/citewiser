@@ -284,7 +284,17 @@ Verification:
 - Unknown-type test verifies fallback behavior.
 
 <!-- TASK:T01.3-CONVERSION-ANALYSIS -->
-### [ ] T01.3 Implement Conversion And RAGAnalysis Builder
+### [x] T01.3 Implement Conversion And RAGAnalysis Builder
+
+<!-- PROGRESS:opencode:T01.3-CONVERSION-ANALYSIS:2026-05-14T18:09Z -->
+Status: [x]
+Owner: opencode
+Evidence: added pkg/ragnode convert.go, package docs, and conversion/analysis tests; `go test ./pkg/ragnode` passed; `go test ./...` passed
+Spec refs: spec.md sections 3.2, 6, 12.3, 12.4 implemented for T01.3 scope
+Docs: pkg/ragnode/doc.go documents old backlog conversion, new RAG JSON parsing, and CLI parser separation
+Notes: none
+Commit: not committed
+<!-- /PROGRESS -->
 
 Scope: `pkg/ragnode/convert.go`, `analysis.go`, RAG JSON adapter tests.
 
