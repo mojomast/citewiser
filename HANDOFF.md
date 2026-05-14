@@ -38,15 +38,15 @@ Completed task commits:
 - `T01.3` conversion and analysis builder: `eaa365a`
 - `T02.1` access controller: `c43759e`
 - `T02.2` provenance builders/redaction: `cfde974`
-- `T03.1` authority/token-budget/diversity scorers: implemented and verified in working tree, not committed because no commit was explicitly requested in this slice.
-- `T03.2` personalized PageRank: implemented and verified in working tree, not committed because no commit was explicitly requested in this slice.
-- `T03.3` ranker scoring/suppression: implemented and verified in working tree, not committed because no commit was explicitly requested in this slice.
-- `T04.1` slot policies/context plan: implemented and verified in working tree; pending commit requested by user at end of slice.
-- `T04.2` lost-in-the-middle ordering/budget trimming: implemented and verified in working tree; pending commit requested by user at end of slice.
+- `T03.1` authority/token-budget/diversity scorers: `2a66c2b`
+- `T03.2` personalized PageRank: `2a66c2b`
+- `T03.3` ranker scoring/suppression: `2a66c2b`
+- `T04.1` slot policies/context plan: `2a66c2b`
+- `T04.2` lost-in-the-middle ordering/budget trimming: `2a66c2b`
 
 Latest ledger-only hash updates exist after several task commits; use `git log --oneline -10` for exact current HEAD.
 
-The working tree has intentional uncommitted T03.1-T04.2 changes when this handoff was updated: README/docs updates plus ranker and packer implementation/tests. User requested committing and pushing after this slice.
+The working tree was expected to be clean after the ledger update commit and push for this slice.
 
 ## Next Work
 

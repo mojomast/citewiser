@@ -382,7 +382,7 @@ Evidence: added pkg/ranker authority, token budget, diversity helpers and tests;
 Spec refs: spec.md sections 3.4 and 4.1 implemented for T03.1 scope; section 12 dependency guidance checked
 Docs: pkg/ranker/doc.go documents deterministic scorer helpers, token estimate fallback, version-currentness rule, and diversity penalties; README.md created with current implemented scope and README update rules; DEVPLAN.md and HANDOFF.md now instruct when README must be updated
 Notes: Version currentness MVP rule is 1 for non-superseded versioned nodes, 0.5 for non-superseded nodes missing Version, and 0 for SupersededBy. Diversity subtracts 0.35 for repeated Source and 0.25 for repeated CommunityID. Changes are not committed because this session was not explicitly asked to create a git commit.
-Commit: not committed
+Commit: 2a66c2b
 <!-- /PROGRESS -->
 
 Scope: `pkg/ranker/authority.go`, `token_budget.go`, `diversity.go`.
@@ -409,7 +409,7 @@ Evidence: added pkg/ranker/ppr.go and ppr_test.go; `go test ./pkg/ranker` passed
 Spec refs: spec.md sections 3.4 and 6 implemented for T03.2 scope
 Docs: pkg/ranker/doc.go and README.md updated for PPR/ranker behavior
 Notes: PPR uses candidate QueryRelevance restart seeds, ragnode.EdgeWeight transition weights, alpha 0.15, max 100 iterations, tolerance 1e-8, and returns zeroes for fewer-than-two usable edges. Built on uncommitted T03.1 changes at user request.
-Commit: not committed
+Commit: 2a66c2b
 <!-- /PROGRESS -->
 
 Scope: `pkg/ranker/ppr.go`.
@@ -438,7 +438,7 @@ Evidence: added pkg/ranker/ranker.go, scorer.go, explain.go, and ranker_test.go;
 Spec refs: spec.md sections 3.4, 4.1, 4.3, and 8.1 implemented for T03.3 scope
 Docs: pkg/ranker/doc.go and README.md updated for default ranker behavior and access-gated suppressions
 Notes: DefaultRanker ranks candidate nodes when candidates are present, otherwise all analysis nodes; access control runs before scoring; access suppressions expose only score metadata. Query type modifiers are driven by access.Context Attributes["query_type"] until packer/query-type constants land. Changes are not committed because this session was not explicitly asked to create a git commit.
-Commit: not committed
+Commit: 2a66c2b
 <!-- /PROGRESS -->
 
 Scope: `pkg/ranker/ranker.go`, `scorer.go`, `explain.go`.
@@ -466,7 +466,7 @@ Evidence: added pkg/packer query types, plan structs, slot policies, packer impl
 Spec refs: spec.md sections 3.5, 5.1, and 5.2 implemented for T04.1 scope
 Docs: pkg/packer/doc.go and README.md updated for context plan packing behavior
 Notes: DefaultPacker uses DefaultRanker and builds provenance-bearing slots; Agentic unapproved controlling nodes are suppressed at packing time so missing required slots produce red hygiene; callerClearance maps to access.Context clearance.
-Commit: not committed
+Commit: 2a66c2b
 <!-- /PROGRESS -->
 
 Scope: `pkg/packer/querytype.go`, `plan.go`, `slots.go`, `packer.go`.
@@ -496,7 +496,7 @@ Evidence: added pkg/packer/ordering.go and ordering_test.go; `go test ./pkg/pack
 Spec refs: spec.md section 9 implemented for T04.2 scope
 Docs: pkg/packer/doc.go and README.md updated for lost-in-the-middle ordering and budget trimming behavior
 Notes: Ordering assigns front/middle/back bands, applies Agentic permission/foundation/procedure priority, stable-sorts by score then node ID within priority groups, and trims lowest-score middle support before optional overview then optional bridge; required over-budget slots remain and set red hygiene.
-Commit: not committed
+Commit: 2a66c2b
 <!-- /PROGRESS -->
 
 Scope: `pkg/packer/ordering.go`, `packer.go`.
