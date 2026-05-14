@@ -345,7 +345,17 @@ Verification:
 - Tests for trusted approvers, unapproved agentic nodes, edge access, and redaction.
 
 <!-- TASK:T02.2-PROVENANCE -->
-### [ ] T02.2 Implement Provenance Builders
+### [x] T02.2 Implement Provenance Builders
+
+<!-- PROGRESS:opencode:T02.2-PROVENANCE:2026-05-14T18:19Z -->
+Status: [x]
+Owner: opencode
+Evidence: added provenance source ref/trail builders, access redaction, and tests; `go test ./pkg/provenance` passed; `go test ./...` passed
+Spec refs: spec.md section 8.2 implemented for T02.2 scope
+Docs: pkg/provenance/doc.go documents deterministic builders and required access redaction before boundaries
+Notes: none
+Commit: not committed
+<!-- /PROGRESS -->
 
 Scope: `pkg/provenance/trail.go`, `redact.go`.
 
