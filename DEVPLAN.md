@@ -1163,7 +1163,7 @@ Evidence: updated module path/imports to github.com/mojomast/citewiser; changed 
 Spec refs: spec.md module/import snippets checked and updated to canonical repo path
 Docs: README.md, spec.md, DEVPLAN.md, and HANDOFF.md updated for canonical module path and hardening notes
 Notes: QueuePlan gained additive BudgetExceeded field for callers that need to detect the first-item budget override.
-Commit: not committed
+Commit: aafd54a
 <!-- /PROGRESS -->
 
 Scope: `go.mod`, internal imports, `pkg/citewise`, README/spec/handoff/devplan documentation.

@@ -65,11 +65,11 @@ Completed task commits:
 - `T10.2` token counting contract: `3f4acab`
 - `T10.3` table provenance preservation: `3f4acab`
 - `T10.4` pre-rerank redaction helper: `3f4acab`
-- `T11.1` module path and legacy Citewise hardening: not committed in current slice
+- `T11.1` module path and legacy Citewise hardening: `aafd54a`
 
 Latest ledger-only hash updates exist after several task commits; use `git log --oneline -10` for exact current HEAD.
 
-The working tree contains completed, verified T11.1 changes that are not committed yet.
+The working tree is expected to be clean after the T11 ledger hash update commit and push.
 
 ## Next Work
 
