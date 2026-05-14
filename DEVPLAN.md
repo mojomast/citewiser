@@ -236,7 +236,7 @@ Evidence: added pkg/ragnode node/candidate/analysis types and tests; `go test ./
 Spec refs: spec.md section 3.2 implemented for T01.1 scope
 Docs: exported type names match spec; no additional docs needed yet because behavior is limited to data shapes and token estimation
 Notes: plain Edge struct added for CandidateSet/RAGAnalysis compilation; normalization remains T01.2
-Commit: not committed
+Commit: e2b249f
 <!-- /PROGRESS -->
 
 Scope: `pkg/ragnode/node.go`, `candidate.go`, `analysis.go`.
