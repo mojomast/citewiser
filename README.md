@@ -14,8 +14,10 @@ Implemented so far:
 - Provenance source-ref and source-trail builders in `pkg/provenance`.
 - Ranker authority, token-budget fit, diversity, personalized PageRank, access-gated ranking, deterministic scoring, and suppression helpers in `pkg/ranker`.
 - Context plan packing in `pkg/packer`, including query-type slot policies, provenance-bearing slots, hygiene signals, lost-in-the-middle ordering, and budget trimming.
+- Graph hygiene analysis in `pkg/hygiene`, including missing-edge suggestions, hygiene scoring, corrective signals, and retrieval targets for red plans.
+- Deterministic query routing in `pkg/router`, including query type, retrieval mode, budget hints, and rule-match reasons.
 
-Placeholder packages remain for future milestones: `pkg/packer`, `pkg/hygiene`, `pkg/router`, `pkg/memory`, `pkg/rag`, and upstream integration packages.
+Placeholder packages remain for future milestones: `pkg/memory`, `pkg/rag`, and upstream integration packages.
 
 ## Development
 

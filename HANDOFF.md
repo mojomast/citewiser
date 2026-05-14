@@ -43,47 +43,47 @@ Completed task commits:
 - `T03.3` ranker scoring/suppression: `2a66c2b`
 - `T04.1` slot policies/context plan: `2a66c2b`
 - `T04.2` lost-in-the-middle ordering/budget trimming: `2a66c2b`
+- `T04.3` hygiene analyzer: implemented and verified in working tree; pending commit requested by user at end of slice.
+- `T04.4` deterministic query router: implemented and verified in working tree; pending commit requested by user at end of slice.
 
 Latest ledger-only hash updates exist after several task commits; use `git log --oneline -10` for exact current HEAD.
 
-The working tree was expected to be clean after the ledger update commit and push for this slice.
+The working tree has intentional uncommitted T04.3-T04.4 changes when this handoff was updated: README/docs updates plus hygiene and router implementation/tests. User requested committing and pushing after this slice.
 
 ## Next Work
 
-Earliest unblocked task after accepting the current working tree changes: `T04.3 Implement Hygiene Analyzer`.
+Earliest unblocked task after accepting the current working tree changes: `T05.1 Implement GraphRAG JSON Mapper`.
 
 Primary files to create/update:
 
-- `pkg/hygiene/doc.go`
-- `pkg/hygiene/hygiene.go`
-- `pkg/hygiene/suggestions.go`
-- `pkg/hygiene/signal.go`
-- `pkg/hygiene/*_test.go`
+- `pkg/integrations/graphrag/doc.go`
+- `pkg/integrations/graphrag/mapper.go`
+- `pkg/integrations/graphrag/*_test.go`
+- `testdata/graphrag_minimal/*`
 - `DEVPLAN.md`
 - `HANDOFF.md`
-- `README.md` if public hygiene behavior is documented
+- `README.md` if public integration behavior is documented
 
 Relevant `DEVPLAN.md` refs:
 
-- `T04.3`: around lines 497-508, depends on `T01.3` and `T04.1`.
-- `T04.4`: follows T04.3 and is independent router work once query-type constants exist.
+- `T05.1`: around lines 552-568, depends on `T01.3`.
+- `T05.2`: follows T05.1 and is optional parquet work.
 - Parallelization map: around lines 687-707.
 
 Relevant `spec.md` refs:
 
-- Hygiene analyzer requirements: around lines 500-559.
-- Packer HygieneSignal type: around lines 445-451.
+- GraphRAG integration contract: around lines 849-870.
 - Unit-test strategy: around lines 1137-1148.
 - Dependency guidance: around lines 1203-1217. Keep core stdlib-only unless a task explicitly changes that rule.
 
-Concrete `T04.3` instructions:
+Concrete `T05.1` instructions:
 
-1. Claim `T04.3` in `DEVPLAN.md` with a new `PROGRESS` block.
-2. Implement hygiene report wrapper, missing-edge heuristics, score, and corrective signal from spec section 3.6.
-3. Reuse `packer.HygieneSignal` values.
-4. Add deterministic tests for duplicate/orphan/stale/missing-bridge accounting, missing-edge suggestions, score thresholds, and signal thresholds.
-5. Run `go test ./pkg/hygiene` and `go test ./...`.
-6. Update `DEVPLAN.md`, `HANDOFF.md`, and `README.md` if public hygiene behavior is introduced.
+1. Claim `T05.1` in `DEVPLAN.md` with a new `PROGRESS` block.
+2. Implement a JSON mapper for GraphRAG documents, text units, entities, relationships, community reports, communities, and covariates from spec section 7.1.
+3. Add minimal fixtures under `testdata/graphrag_minimal`.
+4. Verify community reports import as `community-summary` with overview role-compatible metadata.
+5. Run `go test ./pkg/integrations/graphrag` and `go test ./...`.
+6. Update `DEVPLAN.md`, `HANDOFF.md`, and `README.md` if public integration behavior is introduced.
 
 T03.1 design decisions made in the current uncommitted slice:
 
@@ -104,15 +104,23 @@ T04.1/T04.2 design decisions made in the current uncommitted slice:
 - Agentic controlling nodes without `ApprovedBy` are suppressed at packing time and missing required Agentic slots produce red hygiene.
 - Ordering prioritizes Agentic permission, foundation, then procedure before score sorting; budget trimming removes middle support, then optional overview, then optional bridge, and leaves required over-budget slots with red hygiene.
 
+T04.3/T04.4 design decisions made in the current uncommitted slice:
+
+- Hygiene red reports include deterministic retrieval targets derived from missing bridges and missing-edge suggestions when degraded plans are disallowed.
+- Title similarity uses token Jaccard; topic overlap uses intersection over smaller topic set for deterministic heuristic matching.
+- Router applies the spec decision tree in exact order and returns only the first matched rule reason; Agentic wins before temporal if both are present.
+
 Verification from the current slice:
 
 - `go test ./pkg/ranker` passed.
 - `go test ./pkg/packer` passed.
+- `go test ./pkg/hygiene` passed.
+- `go test ./pkg/router` passed.
 - `go test ./...` passed.
 
 Parallel option after claiming only one task yourself:
 
-- A subagent may research `T04.4` router requirements without writing files while you implement `T04.3`.
+- A subagent may research `T05.3` LightRAG mapper requirements without writing files while you implement `T05.1`.
 - Do not have subagents edit `DEVPLAN.md` or code concurrently unless each claims a separate unblocked task and the file boundaries are safe.
 
 ## Slice Completion Checklist

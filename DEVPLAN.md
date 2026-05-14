@@ -515,7 +515,17 @@ Verification:
 - Tests for ordering bands, tie-breaking, budget trimming order, required-slot over-budget behavior.
 
 <!-- TASK:T04.3-HYGIENE -->
-### [ ] T04.3 Implement Hygiene Analyzer
+### [x] T04.3 Implement Hygiene Analyzer
+
+<!-- PROGRESS:opencode:T04.3-HYGIENE:2026-05-14T19:25Z -->
+Status: [x]
+Owner: opencode
+Evidence: added pkg/hygiene hygiene analyzer, suggestions, signals, and tests; `go test ./pkg/hygiene` passed
+Spec refs: spec.md section 3.6 implemented
+Docs: pkg/hygiene/doc.go and README.md updated for hygiene behavior
+Notes: Red reports include deterministic retrieval targets when degraded plans are not allowed. Hygiene score combines orphan, duplicate, stale, missing bridge, low trust, and unapproved controlling-node ratios.
+Commit: not committed
+<!-- /PROGRESS -->
 
 Scope: `pkg/hygiene/hygiene.go`, `suggestions.go`, `signal.go`.
 
@@ -533,7 +543,17 @@ Verification:
 - Tests for each heuristic and threshold boundary.
 
 <!-- TASK:T04.4-ROUTER -->
-### [ ] T04.4 Implement Deterministic Query Router
+### [x] T04.4 Implement Deterministic Query Router
+
+<!-- PROGRESS:opencode:T04.4-ROUTER:2026-05-14T19:34Z -->
+Status: [x]
+Owner: opencode
+Evidence: added pkg/router metadata, router, heuristics, and branch coverage tests; `go test ./pkg/router` passed
+Spec refs: spec.md section 3.7 implemented
+Docs: pkg/router/doc.go and README.md updated for deterministic routing behavior
+Notes: Router applies the spec decision tree in exact order and returns a reason for the first matched rule; Agentic intentionally wins before temporal when both cues are present.
+Commit: not committed
+<!-- /PROGRESS -->
 
 Scope: `pkg/router/router.go`, `heuristics.go`, `metadata.go`.
 
