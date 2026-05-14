@@ -52,13 +52,13 @@ Completed task commits:
 - `T06.1` top-level RAG pipeline: `23b26db`
 - `T06.2` optional HTTP server: `23b26db`
 - `T06.3` optional stdio JSON integration: `23b26db`
-- `T07.1` property and invariant tests: implemented and verified in working tree, pending commit.
-- `T07.2` golden fixtures, docs, and examples: implemented and verified in working tree, pending commit.
-- `T07.3` release gate and compatibility audit: implemented and verified in working tree, pending commit.
+- `T07.1` property and invariant tests: `95ecb14`
+- `T07.2` golden fixtures, docs, and examples: `95ecb14`
+- `T07.3` release gate and compatibility audit: `95ecb14`
 
 Latest ledger-only hash updates exist after several task commits; use `git log --oneline -10` for exact current HEAD.
 
-The working tree has intentional uncommitted T07.1-T07.3 changes when this handoff was updated: invariant tests, rag examples, golden context-plan fixtures, compatibility backlog fixture, README release docs, RELEASE_AUDIT.md, and ledger updates.
+The working tree is expected to be clean after the T07 ledger hash update commit and push.
 
 ## Next Work
 
@@ -82,9 +82,8 @@ Relevant `spec.md` refs:
 
 Concrete next instructions:
 
-1. Commit and push T07.1-T07.3 if not already committed.
-2. If new work is requested, add new anchored tasks to `DEVPLAN.md` before implementation.
-3. Resolve open product questions in `spec.md`/`DEVPLAN.md` before changing behavior that depends on them.
+1. If new work is requested, add new anchored tasks to `DEVPLAN.md` before implementation.
+2. Resolve open product questions in `spec.md`/`DEVPLAN.md` before changing behavior that depends on them.
 
 T03.1 design decisions made in the current uncommitted slice:
 

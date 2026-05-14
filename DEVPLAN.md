@@ -779,7 +779,7 @@ Evidence: added pkg/rag invariant property tests for access text absence, budget
 Spec refs: spec.md section 13.2 checked
 Docs: not needed: tests enforce existing public invariants without changing runtime behavior
 Notes: `testing/quick` coverage is focused on stable invariants rather than broad random graph generation.
-Commit: not committed
+Commit: 95ecb14
 <!-- /PROGRESS -->
 
 Scope: package test files across `pkg/*`.
@@ -805,7 +805,7 @@ Evidence: added rag examples, byte-for-byte golden context plan tests, `testdata
 Spec refs: spec.md sections 7.5, 7.6, 11, and 13.3-13.4 checked
 Docs: README.md updated for non-goals, upstream handoff, downstream obligations, and caller-owned memory adapters
 Notes: Golden fixtures cover Agentic green, Agentic red, Temporal stale red, and Factual green plan shapes.
-Commit: not committed
+Commit: 95ecb14
 <!-- /PROGRESS -->
 
 Scope: `testdata/*`, `README.md` or docs file, example tests.
@@ -834,7 +834,7 @@ Evidence: added RELEASE_AUDIT.md; `go test ./...` passed; `go test -tags graphra
 Spec refs: spec.md sections 13.5 and 14 checked
 Docs: RELEASE_AUDIT.md records release-gate commands and dependency notes
 Notes: Non-tagged dependency list shows stdlib plus project packages; parquet external dependencies appear only under `graphrag_parquet` tag.
-Commit: not committed
+Commit: 95ecb14
 <!-- /PROGRESS -->
 
 Scope: whole repository.
