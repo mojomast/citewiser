@@ -81,6 +81,19 @@ go run ./cmd/serve stdio
 
 The stdio request shape is `{"operation":"router|rank|pack|hygiene","request":{...}}`; the response shape is `{"ok":true,"response":{...}}` or `{"ok":false,"error":"..."}`.
 
+Example JSON requests for `/router`, `/pack`, and stdio `pack` are checked in under `testdata/api_examples/` and are exercised by the server tests.
+
+## RAG CLI
+
+Existing Citewise commands remain unchanged. Additive RAG commands are available under `citewise rag`:
+
+```sh
+go run . rag route --file testdata/api_examples/pack_request.json
+go run . rag pack --file testdata/api_examples/pack_request.json --token-budget 1200
+```
+
+Both commands emit deterministic JSON. `rag pack` accepts `--clearance`, `--query-type`, `--token-budget`, and `--allow-degraded` options.
+
 ## Documentation Updates
 
 Update this README whenever a completed task changes one of these user-visible facts:

@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/mojomast/citewiseussy/pkg/access"
@@ -90,6 +92,29 @@ func TestHygieneHandler(t *testing.T) {
 	newServer(rag.NewPipeline()).ServeHTTP(rec, jsonReq(http.MethodPost, "/hygiene", serveRequest("q3")))
 	if rec.Code != http.StatusOK {
 		t.Fatalf("/hygiene code = %d body=%s", rec.Code, rec.Body.String())
+	}
+}
+
+func TestAPIExampleFixtures(t *testing.T) {
+	h := newServer(rag.NewPipeline())
+	for _, tc := range []struct {
+		path     string
+		endpoint string
+	}{
+		{"router_request.json", "/router"},
+		{"pack_request.json", "/pack"},
+	} {
+		t.Run(tc.path, func(t *testing.T) {
+			data, err := os.ReadFile(filepath.Join("..", "..", "testdata", "api_examples", tc.path))
+			if err != nil {
+				t.Fatal(err)
+			}
+			rec := httptest.NewRecorder()
+			h.ServeHTTP(rec, httptest.NewRequest(http.MethodPost, tc.endpoint, bytes.NewReader(data)))
+			if rec.Code != http.StatusOK {
+				t.Fatalf("%s code = %d body=%s", tc.endpoint, rec.Code, rec.Body.String())
+			}
+		})
 	}
 }
 

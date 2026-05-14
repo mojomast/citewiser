@@ -1,0 +1,31 @@
+{
+  "operation": "pack",
+  "request": {
+    "query_id": "q-stdio-pack",
+    "query": "refund policy",
+    "token_budget": 1200,
+    "access": {
+      "caller_id": "user-1",
+      "clearance": "internal"
+    },
+    "allow_degraded_plan": true,
+    "nodes": [
+      {
+        "id": "policy",
+        "title": "Refund Policy",
+        "trust": 1,
+        "goal_fit": 1,
+        "text": "Refund policy text.",
+        "chunk_type": "document",
+        "version": "v1",
+        "sensitivity": "internal"
+      }
+    ],
+    "candidates": [
+      {
+        "node_id": "policy",
+        "query_relevance": 1
+      }
+    ]
+  }
+}

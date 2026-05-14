@@ -1,0 +1,13 @@
+{
+  "query": "latest refund policy",
+  "metadata": {
+    "entity_ids": ["refund-policy"],
+    "topics": ["refunds"],
+    "community_ids": ["support"],
+    "role_counts": {},
+    "chunk_type_counts": {},
+    "has_permission_node": false,
+    "has_decision_basis": false,
+    "max_topic_span": 1
+  }
+}

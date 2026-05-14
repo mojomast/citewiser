@@ -55,23 +55,26 @@ Completed task commits:
 - `T07.1` property and invariant tests: `95ecb14`
 - `T07.2` golden fixtures, docs, and examples: `95ecb14`
 - `T07.3` release gate and compatibility audit: `95ecb14`
+- `T08.1` dependency boundary guardrails: implemented and verified in working tree, pending commit.
+- `T08.2` API and stdio JSON fixtures: implemented and verified in working tree, pending commit.
+- `T08.3` additive RAG CLI commands: implemented and verified in working tree, pending commit.
 
 Latest ledger-only hash updates exist after several task commits; use `git log --oneline -10` for exact current HEAD.
 
-The working tree is expected to be clean after the T07 ledger hash update commit and push.
+The working tree has intentional uncommitted T08.1-T08.3 changes when this handoff was updated: dependency guardrail test, API/stdio fixtures and tests, additive `citewise rag` CLI, README updates, and DEVPLAN updates.
 
 ## Next Work
 
-Earliest unblocked task after accepting the current working tree changes: none. All planned tasks through `T07.3` are implemented and verified.
+Earliest unblocked task after accepting the current working tree changes: none. All planned tasks through `T08.3` are implemented and verified.
 
 Primary files to create/update:
 
-- No remaining planned implementation tasks.
+- No remaining planned implementation tasks after T08 is committed.
 - If work continues, use `spec.md` open questions and release feedback to add new `DEVPLAN.md` tasks before coding.
 
 Relevant `DEVPLAN.md` refs:
 
-- `T07.1`, `T07.2`, and `T07.3`: complete in `DEVPLAN.md`.
+- `T08.1`, `T08.2`, and `T08.3`: complete in `DEVPLAN.md` pending commit hash update.
 - Open decisions remain at the end of `DEVPLAN.md` for post-MVP/product follow-up.
 
 Relevant `spec.md` refs:
@@ -131,6 +134,12 @@ T07.1/T07.2/T07.3 design decisions made in the current uncommitted slice:
 - Golden context-plan fixtures are static byte-for-byte JSON fixtures for Agentic green, Agentic red, Temporal stale red, and Factual green shapes.
 - `RELEASE_AUDIT.md` records release-gate commands and dependency-audit notes; non-tagged builds remain stdlib plus project packages, while parquet dependencies are isolated behind `graphrag_parquet`.
 
+T08.1/T08.2/T08.3 design decisions made in the current uncommitted slice:
+
+- Dependency boundary checks now run as a root Go test using `go list -deps`; non-tagged builds must not include parquet or rejected infra/LLM/router packages, while parquet is expected under `graphrag_parquet`.
+- Public API/stdio request examples live under `testdata/api_examples` and are exercised by `cmd/serve` tests.
+- Additive CLI commands live under `citewise rag route` and `citewise rag pack`; legacy commands still dispatch through `pkg/citewise` unchanged.
+
 Verification from the current slice:
 
 - `go test ./pkg/ranker` passed.
@@ -149,6 +158,12 @@ Verification from the current slice:
 - `go test -tags graphrag_parquet ./...` passed.
 - Existing CLI commands `roles`, `score`, `queue`, `explain`, `hygiene`, and `export` passed against `testdata/citewise_backlog.json`.
 - `go list -deps ./...` and `go list -deps -tags graphrag_parquet ./pkg/integrations/graphrag` were audited and recorded in `RELEASE_AUDIT.md`.
+- `go test .` passed after dependency guardrails.
+- `go test ./cmd/serve` passed after API/stdio fixture tests.
+- `go test ./...` passed after RAG CLI additions.
+- `go run . roles --file testdata/citewise_backlog.json` passed.
+- `go run . rag route --file testdata/api_examples/pack_request.json` passed.
+- `go run . rag pack --file testdata/api_examples/pack_request.json --token-budget 1200` passed.
 - `go test ./...` passed.
 
 Parallel option after claiming only one task yourself:

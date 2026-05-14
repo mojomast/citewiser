@@ -3,6 +3,8 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -53,5 +55,26 @@ func TestRunStdioPackGolden(t *testing.T) {
 	}
 	if !resp.OK || resp.Response.Plan.QueryID != "q-stdio" || len(resp.Response.Plan.Slots) == 0 {
 		t.Fatalf("stdio pack response = %s", out.String())
+	}
+}
+
+func TestRunStdioExampleFixture(t *testing.T) {
+	data, err := os.ReadFile(filepath.Join("..", "..", "testdata", "api_examples", "stdio_pack_request.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var out bytes.Buffer
+	if err := runStdio(bytes.NewReader(data), &out, rag.NewPipeline()); err != nil {
+		t.Fatal(err)
+	}
+	var resp struct {
+		OK       bool         `json:"ok"`
+		Response packResponse `json:"response"`
+	}
+	if err := json.Unmarshal(out.Bytes(), &resp); err != nil {
+		t.Fatal(err)
+	}
+	if !resp.OK || resp.Response.Plan.QueryID != "q-stdio-pack" {
+		t.Fatalf("stdio fixture response = %s", out.String())
 	}
 }

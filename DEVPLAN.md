@@ -166,6 +166,13 @@ Goal: property tests, golden outputs, docs, examples, and compatibility checks.
 
 Exit gate: `go test ./...`, existing CLI regression tests, race-safe memory tests, and deterministic golden tests pass.
 
+<!-- ANCHOR:M08-POST-RELEASE-POLISH -->
+### M08 Post-Release Polish
+
+Goal: automate release guardrails and add small caller-facing integration surfaces after the MVP release gate.
+
+Exit gate: dependency boundaries are test-enforced, API/stdout fixtures compile against handlers, additive RAG CLI commands pass smoke tests, and `go test ./...` passes.
+
 ## Work Packets
 
 <!-- TASK:T00.1-BOOTSTRAP-MODULE -->
@@ -854,6 +861,88 @@ Verification:
 - `go test ./...`
 - `go test -tags graphrag_parquet ./...` if optional parquet implemented.
 - Record `go list -deps ./...` audit notes.
+
+<!-- TASK:T08.1-DEPENDENCY-GUARDRAILS -->
+### [x] T08.1 Automate Dependency Boundary Guardrails
+
+<!-- PROGRESS:opencode:T08.1-DEPENDENCY-GUARDRAILS:2026-05-14T20:04Z -->
+Status: [x]
+Owner: opencode
+Evidence: added release_guardrail_test.go dependency boundary checks; `go test .` passed
+Spec refs: spec.md section 14 checked
+Docs: not needed: guardrail automates existing release-audit policy
+Notes: none
+Commit: not committed
+<!-- /PROGRESS -->
+
+Scope: release audit tests and docs.
+
+Dependencies: T07.3.
+
+Implementation:
+
+- Add an automated test that verifies non-tagged builds do not depend on rejected infrastructure, LLM, vector DB, web-router, graph-algorithm, or parquet packages.
+- Verify parquet dependencies appear only when `graphrag_parquet` is explicitly enabled.
+- Keep the guardrail deterministic and stdlib-only.
+
+Verification:
+
+- Run `go test ./...`.
+
+<!-- TASK:T08.2-API-STDIO-FIXTURES -->
+### [x] T08.2 Add API And Stdio JSON Fixtures
+
+<!-- PROGRESS:opencode:T08.2-API-STDIO-FIXTURES:2026-05-14T20:04Z -->
+Status: [x]
+Owner: opencode
+Evidence: added testdata/api_examples fixtures and handler/stdio fixture tests; `go test ./cmd/serve` passed
+Spec refs: spec.md section 3.9 checked
+Docs: README.md notes checked-in API/stdin fixture examples
+Notes: none
+Commit: not committed
+<!-- /PROGRESS -->
+
+Scope: `testdata/api_examples`, `cmd/serve` tests, README docs if public examples change.
+
+Dependencies: T06.2, T06.3, T07.2.
+
+Implementation:
+
+- Add checked-in JSON examples for `/router`, `/pack`, and stdio `pack` requests.
+- Add tests that load the fixtures and verify handlers/stdio dispatch accept them.
+- Document fixture purpose for callers.
+
+Verification:
+
+- Run `go test ./cmd/serve` and `go test ./...`.
+
+<!-- TASK:T08.3-RAG-CLI -->
+### [x] T08.3 Add Additive RAG CLI Commands
+
+<!-- PROGRESS:opencode:T08.3-RAG-CLI:2026-05-14T20:04Z -->
+Status: [x]
+Owner: opencode
+Evidence: added pkg/ragcli and root dispatch for `citewise rag route`/`pack`, smoke tests for old and new commands; `go test ./...` passed; `go run . roles --file testdata/citewise_backlog.json`, `go run . rag route --file testdata/api_examples/pack_request.json`, and `go run . rag pack --file testdata/api_examples/pack_request.json --token-budget 1200` passed
+Spec refs: spec.md open decision D05 checked; user requested continued slices, compatibility tests are locked
+Docs: README.md documents additive RAG CLI usage
+Notes: Existing `pkg/citewise` command handling remains unchanged; root `main` dispatches only the new `rag` namespace to `pkg/ragcli`.
+Commit: not committed
+<!-- /PROGRESS -->
+
+Scope: `main.go`, a small RAG CLI package or helper, CLI tests, README docs.
+
+Dependencies: T06.1, T07.3.
+
+Implementation:
+
+- Add `citewise rag route` and `citewise rag pack` without changing existing commands.
+- Accept RAG candidate JSON via `--file` and emit deterministic JSON.
+- Keep legacy `roles`, `score`, `queue`, `explain`, `hygiene`, and `export` behavior unchanged.
+
+Verification:
+
+- Run CLI smoke tests for old and new commands.
+- Run `go test ./...`.
 
 ## Parallelization Map
 
