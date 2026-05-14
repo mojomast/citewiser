@@ -66,11 +66,11 @@ Completed task commits:
 - `T10.3` table provenance preservation: `3f4acab`
 - `T10.4` pre-rerank redaction helper: `3f4acab`
 - `T11.1` module path and legacy Citewise hardening: `aafd54a`
-- `T12.1` GovOne library surface hardening: not committed in current slice
+- `T12.1` GovOne library surface hardening: `97533d9`
 
 Latest ledger-only hash updates exist after several task commits; use `git log --oneline -10` for exact current HEAD.
 
-The working tree contains completed and verified T12.1 GovOne library surface changes that are not committed because the user has not explicitly requested a commit.
+The working tree is expected to be clean after the T12 ledger hash update commit and push.
 
 ## Next Work
 

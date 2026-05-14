@@ -1200,7 +1200,7 @@ Evidence: added hygiene.Analyzer usage in rag.Pipeline, memory.Store and FileSto
 Spec refs: spec.md sections 3.2, 3.3, 3.5, 3.6, 3.8, 3.9 checked for interface/API compatibility
 Docs: README.md and package docs updated for GovOne access, tenant scoping, memory/hygiene interfaces, plan hash, and suppression breakdown
 Notes: no scoring weights, CLI command behavior, or cmd/serve source files changed
-Commit: not committed
+Commit: 97533d9
 <!-- /PROGRESS -->
 
 Scope: `pkg/access`, `pkg/ragnode`, `pkg/packer`, `pkg/hygiene`, `pkg/memory`, `pkg/rag`, docs, and tests.
