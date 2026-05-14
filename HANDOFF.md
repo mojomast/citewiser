@@ -12,6 +12,21 @@ This file is the first thing a new agent should read. It summarizes the current 
 6. Claim exactly one task by changing its checkbox to `[/]` and adding a new `PROGRESS` block immediately under that task.
 7. Implement in a circular slice: code, tests, docs, verification, `DEVPLAN.md`, `HANDOFF.md`, then commit if the user asked for normal development/commits or the dev plan task requires it.
 
+## GitHub Remote And Push
+
+Canonical GitHub repository: `https://github.com/mojomast/citewiser`
+
+Current local repository may not have a named remote configured. Before pushing, check with `git remote -v`.
+
+Push instructions:
+
+1. Commit all completed slice changes first. Do not push uncommitted work.
+2. Verify the branch and status with `git branch --show-current` and `git status --short`.
+3. If a remote named `origin` already points to `https://github.com/mojomast/citewiser.git`, push with `git push origin HEAD:main`.
+4. If no remote is configured, push without changing git config: `git push https://github.com/mojomast/citewiser.git HEAD:main`.
+5. If a remote points somewhere else, do not overwrite it without user approval; use the explicit URL push form above.
+6. Never force-push unless the user explicitly requests it. Never force-push to `main` without warning first.
+
 ## Current State
 
 Completed task commits:
