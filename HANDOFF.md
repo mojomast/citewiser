@@ -6,7 +6,7 @@ This file is the first thing a new agent should read. It summarizes the current 
 
 1. Read `HANDOFF.md` first.
 2. Read `spec.md` for product truth. Current ranker refs: `spec.md` around lines 296-402 and 743-789.
-3. Read `DEVPLAN.md` for task state and sequencing. Resume workflow: around lines 5-16. Documentation discipline: around lines 30-40. Progress marker protocol: around lines 55-88. Next tasks: around lines 374-427.
+3. Read `DEVPLAN.md` for task state and sequencing. Resume workflow: around lines 5-16. Documentation discipline: around lines 30-41. Progress marker protocol: around lines 56-89. Next tasks: around lines 392-428.
 4. Check git before editing: `git status --short`, `git diff`, `git log --oneline -5`.
 5. Identify the earliest unblocked `[ ]` task in `DEVPLAN.md`. Do not take over `[/]` work unless stale or explicitly approved.
 6. Claim exactly one task by changing its checkbox to `[/]` and adding a new `PROGRESS` block immediately under that task.
@@ -38,68 +38,81 @@ Completed task commits:
 - `T01.3` conversion and analysis builder: `eaa365a`
 - `T02.1` access controller: `c43759e`
 - `T02.2` provenance builders/redaction: `cfde974`
+- `T03.1` authority/token-budget/diversity scorers: implemented and verified in working tree, not committed because no commit was explicitly requested in this slice.
+- `T03.2` personalized PageRank: implemented and verified in working tree, not committed because no commit was explicitly requested in this slice.
+- `T03.3` ranker scoring/suppression: implemented and verified in working tree, not committed because no commit was explicitly requested in this slice.
+- `T04.1` slot policies/context plan: implemented and verified in working tree; pending commit requested by user at end of slice.
+- `T04.2` lost-in-the-middle ordering/budget trimming: implemented and verified in working tree; pending commit requested by user at end of slice.
 
 Latest ledger-only hash updates exist after several task commits; use `git log --oneline -10` for exact current HEAD.
 
-The working tree was clean when this handoff was created.
+The working tree has intentional uncommitted T03.1-T04.2 changes when this handoff was updated: README/docs updates plus ranker and packer implementation/tests. User requested committing and pushing after this slice.
 
 ## Next Work
 
-Earliest unblocked task: `T03.1 Implement Authority, Token Budget, Diversity Scorers`.
+Earliest unblocked task after accepting the current working tree changes: `T04.3 Implement Hygiene Analyzer`.
 
 Primary files to create/update:
 
-- `pkg/ranker/doc.go`
-- `pkg/ranker/authority.go`
-- `pkg/ranker/token_budget.go`
-- `pkg/ranker/diversity.go`
-- `pkg/ranker/*_test.go`
+- `pkg/hygiene/doc.go`
+- `pkg/hygiene/hygiene.go`
+- `pkg/hygiene/suggestions.go`
+- `pkg/hygiene/signal.go`
+- `pkg/hygiene/*_test.go`
 - `DEVPLAN.md`
 - `HANDOFF.md`
+- `README.md` if public hygiene behavior is documented
 
 Relevant `DEVPLAN.md` refs:
 
-- `T03.1`: around lines 374-390.
-- `T03.2`: around lines 391-409, can be worked independently after `T01.3`.
-- `T03.3`: around lines 410-427, must wait for `T02.1`, `T03.1`, and `T03.2`.
+- `T04.3`: around lines 497-508, depends on `T01.3` and `T04.1`.
+- `T04.4`: follows T04.3 and is independent router work once query-type constants exist.
 - Parallelization map: around lines 687-707.
 
 Relevant `spec.md` refs:
 
-- Ranker types/interfaces: around lines 296-360.
-- `AuthorityScore` formula and chunk priors: around lines 361-383.
-- `TokenBudgetFit` formula: around lines 384-394.
-- PPR context for later `T03.2`: around lines 396-402.
-- Default score formula for later `T03.3`: around lines 745-762.
-- Query-type modifiers for later `T03.3`: around lines 777-789.
+- Hygiene analyzer requirements: around lines 500-559.
+- Packer HygieneSignal type: around lines 445-451.
 - Unit-test strategy: around lines 1137-1148.
-- Dependency guidance: around lines 1203-1217. Do not add Gonum or other core dependencies for MVP ranker work.
+- Dependency guidance: around lines 1203-1217. Keep core stdlib-only unless a task explicitly changes that rule.
 
-Concrete `T03.1` instructions:
+Concrete `T04.3` instructions:
 
-1. Claim `T03.1` in `DEVPLAN.md` with a `PROGRESS` block.
-2. Add package docs explaining deterministic scorer helpers and the token-estimate fallback rationale.
-3. Implement authority scoring from `spec.md` lines 361-383:
-   - Clamp to `0..1`.
-   - `0.35 * Trust`.
-   - `0.20 * normalizedIncomingCites` using incoming `cites` edges, normalized by the max incoming cite count in the analysis.
-   - `0.20 * approvedByScore`, likely `1` when `ApprovedBy` is non-empty, else `0`.
-   - `0.15 * chunkTypeAuthority` using the exact prior table.
-   - `0.10 * versionCurrentness`, likely `1` when `Version` is non-empty and node is not superseded, lower/zero for superseded or missing version. If interpretation is unclear, document the chosen deterministic MVP rule in package docs and tests.
-4. Implement token budget fit from `spec.md` lines 384-392:
-   - Use `RAGNode.EffectiveTokenCount()` so `ceil(len(Text)/4)` applies when `TokenCount == 0`.
-   - Compute token density as `AuthorityScore / max(1, log2(TokenCount + 2))`.
-   - Normalize density deterministically across nodes in the current analysis, or document/test a bounded single-node fallback if implemented as a stateless helper.
-   - Apply length-fit thresholds exactly: `<= 0.08`, `<= 0.15`, `<= 0.25`, otherwise `0.25`.
-5. Implement diversity scoring by source and community, deterministic and bounded `0..1`.
-6. Add exact numeric table tests covering clamp behavior, chunk priors, token estimate fallback, and diversity source/community penalties.
-7. Run `go test ./pkg/ranker` and `go test ./...`.
-8. Update `DEVPLAN.md` `T03.1` progress with changed paths, tests, docs, notes, and commit hash after commit.
-9. Update this `HANDOFF.md` so the next agent sees the new current state and next task.
+1. Claim `T04.3` in `DEVPLAN.md` with a new `PROGRESS` block.
+2. Implement hygiene report wrapper, missing-edge heuristics, score, and corrective signal from spec section 3.6.
+3. Reuse `packer.HygieneSignal` values.
+4. Add deterministic tests for duplicate/orphan/stale/missing-bridge accounting, missing-edge suggestions, score thresholds, and signal thresholds.
+5. Run `go test ./pkg/hygiene` and `go test ./...`.
+6. Update `DEVPLAN.md`, `HANDOFF.md`, and `README.md` if public hygiene behavior is introduced.
+
+T03.1 design decisions made in the current uncommitted slice:
+
+- Version currentness is `1` for non-superseded versioned nodes, `0.5` for non-superseded nodes missing `Version`, and `0` for superseded nodes.
+- Diversity starts at `1`, subtracts `0.35` for repeated `Source`, subtracts `0.25` for repeated `CommunityID`, and clamps to `0..1`.
+- `TokenBudgetFit` normalizes density across `analysis.Nodes`; `TokenBudgetFitSingle` clamps the single-node density as a bounded fallback.
+
+T03.2/T03.3 design decisions made in the current uncommitted slice:
+
+- PPR uses `Candidate.QueryRelevance` restart seeds, `ragnode.EdgeWeight` transition weights, alpha `0.15`, max `100` iterations, tolerance `1e-8`, and zero-map fallback for fewer than two usable edges.
+- `DefaultRanker` ranks candidate nodes when candidates are present; if no candidates are present, it ranks all analysis nodes for test/adapter convenience.
+- Query-type modifiers are read from `access.Context.Attributes["query_type"]` until `pkg/packer` query-type constants are implemented.
+- Access suppression returns only score metadata and does not include redacted node copies.
+
+T04.1/T04.2 design decisions made in the current uncommitted slice:
+
+- `DefaultPacker` uses `DefaultRanker` and passes `callerClearance` through to access control; it sets `allow_unapproved_agentic_nodes=true` only so packer can enforce Agentic approval failures explicitly and return red plans.
+- Agentic controlling nodes without `ApprovedBy` are suppressed at packing time and missing required Agentic slots produce red hygiene.
+- Ordering prioritizes Agentic permission, foundation, then procedure before score sorting; budget trimming removes middle support, then optional overview, then optional bridge, and leaves required over-budget slots with red hygiene.
+
+Verification from the current slice:
+
+- `go test ./pkg/ranker` passed.
+- `go test ./pkg/packer` passed.
+- `go test ./...` passed.
 
 Parallel option after claiming only one task yourself:
 
-- A subagent may research `T03.2` PPR requirements without writing files while you implement `T03.1`.
+- A subagent may research `T04.4` router requirements without writing files while you implement `T04.3`.
 - Do not have subagents edit `DEVPLAN.md` or code concurrently unless each claims a separate unblocked task and the file boundaries are safe.
 
 ## Slice Completion Checklist
@@ -133,6 +146,7 @@ At the end of every slice, do all applicable items:
 - Public packages need useful `doc.go` comments when behavior becomes usable.
 - Public exported functions/types need comments when names do not fully explain semantics.
 - Do not add aspirational docs for unimplemented features unless marked as a future task with the relevant spec/task ID.
+- Keep `README.md` present and current. Update it whenever a slice changes implemented package behavior, public APIs, CLI/API surfaces, schemas, fixtures, examples, operational workflows, dependency guidance, or setup/test instructions; otherwise note in `DEVPLAN.md` why no README update was required.
 
 ## Subagent Instructions
 

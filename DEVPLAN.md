@@ -38,6 +38,7 @@ Documentation must be built as the system is built, not deferred to the end:
 - Memory behavior must document when write-back is allowed, what is stored, re-gating rules, and reuse rejection reasons.
 - If docs and implementation disagree, fix both before marking the task complete.
 - Do not add aspirational docs for features not implemented; use `TODO(spec section, task ID)` only when a later task owns the work.
+- Keep `README.md` current with implemented user-visible behavior. Update it in the same slice when package behavior, public APIs, CLI/API surfaces, schemas, fixtures, examples, operational workflows, dependency guidance, or setup/test instructions change; otherwise record why README changes were not needed in the task `PROGRESS` block.
 
 ## Git Discipline
 
@@ -372,7 +373,17 @@ Verification:
 - Tests for direct retrieval hop, required slot synthetic hop, community summary path, decision basis path, and redaction.
 
 <!-- TASK:T03.1-AUTHORITY-TOKEN-DIVERSITY -->
-### [ ] T03.1 Implement Authority, Token Budget, Diversity Scorers
+### [x] T03.1 Implement Authority, Token Budget, Diversity Scorers
+
+<!-- PROGRESS:opencode:T03.1-AUTHORITY-TOKEN-DIVERSITY:2026-05-14T18:24Z -->
+Status: [x]
+Owner: opencode
+Evidence: added pkg/ranker authority, token budget, diversity helpers and tests; added README.md; updated docs guidance in DEVPLAN.md and HANDOFF.md; `go test ./pkg/ranker` passed; `go test ./...` passed
+Spec refs: spec.md sections 3.4 and 4.1 implemented for T03.1 scope; section 12 dependency guidance checked
+Docs: pkg/ranker/doc.go documents deterministic scorer helpers, token estimate fallback, version-currentness rule, and diversity penalties; README.md created with current implemented scope and README update rules; DEVPLAN.md and HANDOFF.md now instruct when README must be updated
+Notes: Version currentness MVP rule is 1 for non-superseded versioned nodes, 0.5 for non-superseded nodes missing Version, and 0 for SupersededBy. Diversity subtracts 0.35 for repeated Source and 0.25 for repeated CommunityID. Changes are not committed because this session was not explicitly asked to create a git commit.
+Commit: not committed
+<!-- /PROGRESS -->
 
 Scope: `pkg/ranker/authority.go`, `token_budget.go`, `diversity.go`.
 
@@ -389,7 +400,17 @@ Verification:
 - Exact numeric table tests with clamp behavior and token estimate rationale.
 
 <!-- TASK:T03.2-PPR -->
-### [ ] T03.2 Implement Custom Personalized PageRank
+### [x] T03.2 Implement Custom Personalized PageRank
+
+<!-- PROGRESS:opencode:T03.2-PPR:2026-05-14T18:35Z -->
+Status: [x]
+Owner: opencode
+Evidence: added pkg/ranker/ppr.go and ppr_test.go; `go test ./pkg/ranker` passed
+Spec refs: spec.md sections 3.4 and 6 implemented for T03.2 scope
+Docs: pkg/ranker/doc.go and README.md updated for PPR/ranker behavior
+Notes: PPR uses candidate QueryRelevance restart seeds, ragnode.EdgeWeight transition weights, alpha 0.15, max 100 iterations, tolerance 1e-8, and returns zeroes for fewer-than-two usable edges. Built on uncommitted T03.1 changes at user request.
+Commit: not committed
+<!-- /PROGRESS -->
 
 Scope: `pkg/ranker/ppr.go`.
 
@@ -408,7 +429,17 @@ Verification:
 - Tests for convergence, disconnected graph, dangling nodes, fewer-than-two-edge fallback, deterministic output.
 
 <!-- TASK:T03.3-RANKER -->
-### [ ] T03.3 Implement Ranker Scoring And Suppression
+### [x] T03.3 Implement Ranker Scoring And Suppression
+
+<!-- PROGRESS:opencode:T03.3-RANKER:2026-05-14T18:39Z -->
+Status: [x]
+Owner: opencode
+Evidence: added pkg/ranker/ranker.go, scorer.go, explain.go, and ranker_test.go; `go test ./pkg/ranker` passed
+Spec refs: spec.md sections 3.4, 4.1, 4.3, and 8.1 implemented for T03.3 scope
+Docs: pkg/ranker/doc.go and README.md updated for default ranker behavior and access-gated suppressions
+Notes: DefaultRanker ranks candidate nodes when candidates are present, otherwise all analysis nodes; access control runs before scoring; access suppressions expose only score metadata. Query type modifiers are driven by access.Context Attributes["query_type"] until packer/query-type constants land. Changes are not committed because this session was not explicitly asked to create a git commit.
+Commit: not committed
+<!-- /PROGRESS -->
 
 Scope: `pkg/ranker/ranker.go`, `scorer.go`, `explain.go`.
 
@@ -426,7 +457,17 @@ Verification:
 - Tests for formula weights, access suppression redaction, modifier application, duplicate/stale/low-trust penalties, stable sorting.
 
 <!-- TASK:T04.1-PACKER-SLOTS -->
-### [ ] T04.1 Implement Slot Policies And ContextPlan
+### [x] T04.1 Implement Slot Policies And ContextPlan
+
+<!-- PROGRESS:opencode:T04.1-PACKER-SLOTS:2026-05-14T18:55Z -->
+Status: [x]
+Owner: opencode
+Evidence: added pkg/packer query types, plan structs, slot policies, packer implementation, and packer tests; `go test ./pkg/packer` passed
+Spec refs: spec.md sections 3.5, 5.1, and 5.2 implemented for T04.1 scope
+Docs: pkg/packer/doc.go and README.md updated for context plan packing behavior
+Notes: DefaultPacker uses DefaultRanker and builds provenance-bearing slots; Agentic unapproved controlling nodes are suppressed at packing time so missing required slots produce red hygiene; callerClearance maps to access.Context clearance.
+Commit: not committed
+<!-- /PROGRESS -->
 
 Scope: `pkg/packer/querytype.go`, `plan.go`, `slots.go`, `packer.go`.
 
@@ -446,7 +487,17 @@ Verification:
 - Smoke tests A-E from section 13.4.
 
 <!-- TASK:T04.2-LOST-IN-MIDDLE -->
-### [ ] T04.2 Implement Lost-In-The-Middle Ordering And Budget Trimming
+### [x] T04.2 Implement Lost-In-The-Middle Ordering And Budget Trimming
+
+<!-- PROGRESS:opencode:T04.2-LOST-IN-MIDDLE:2026-05-14T19:04Z -->
+Status: [x]
+Owner: opencode
+Evidence: added pkg/packer/ordering.go and ordering_test.go; `go test ./pkg/packer` passed
+Spec refs: spec.md section 9 implemented for T04.2 scope
+Docs: pkg/packer/doc.go and README.md updated for lost-in-the-middle ordering and budget trimming behavior
+Notes: Ordering assigns front/middle/back bands, applies Agentic permission/foundation/procedure priority, stable-sorts by score then node ID within priority groups, and trims lowest-score middle support before optional overview then optional bridge; required over-budget slots remain and set red hygiene.
+Commit: not committed
+<!-- /PROGRESS -->
 
 Scope: `pkg/packer/ordering.go`, `packer.go`.
 
