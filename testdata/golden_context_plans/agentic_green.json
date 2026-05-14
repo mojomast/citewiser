@@ -1,0 +1,119 @@
+{
+  "query_id": "q-agentic-green",
+  "query_type": "Agentic",
+  "slots": [
+    {
+      "index": 0,
+      "slot_type": "permission",
+      "node_id": "perm",
+      "role": "permission",
+      "title": "perm title",
+      "text": "perm text",
+      "token_count": 10,
+      "score": 90,
+      "position": "front",
+      "source": {
+        "node_id": "perm",
+        "origin": "golden",
+        "source": "fixture",
+        "version": "v3",
+        "observed_at": "0001-01-01T00:00:00Z",
+        "updated_at": "0001-01-01T00:00:00Z",
+        "locator": {}
+      },
+      "source_trail": [
+        {
+          "node_id": "perm",
+          "edge_type": "retrieved",
+          "confidence": 1
+        }
+      ],
+      "must_cite": true,
+      "rationale": "golden fixture"
+    },
+    {
+      "index": 1,
+      "slot_type": "procedure",
+      "node_id": "proc",
+      "role": "procedure",
+      "title": "proc title",
+      "text": "proc text",
+      "token_count": 10,
+      "score": 90,
+      "position": "front",
+      "source": {
+        "node_id": "proc",
+        "origin": "golden",
+        "source": "fixture",
+        "version": "v2",
+        "observed_at": "0001-01-01T00:00:00Z",
+        "updated_at": "0001-01-01T00:00:00Z",
+        "locator": {}
+      },
+      "source_trail": [
+        {
+          "node_id": "proc",
+          "edge_type": "retrieved",
+          "confidence": 1
+        }
+      ],
+      "must_cite": true,
+      "rationale": "golden fixture"
+    },
+    {
+      "index": 2,
+      "slot_type": "decision",
+      "node_id": "decision",
+      "role": "decision",
+      "title": "decision title",
+      "text": "decision text",
+      "token_count": 10,
+      "score": 90,
+      "position": "front",
+      "source": {
+        "node_id": "decision",
+        "origin": "golden",
+        "source": "fixture",
+        "version": "2026-04",
+        "observed_at": "0001-01-01T00:00:00Z",
+        "updated_at": "0001-01-01T00:00:00Z",
+        "locator": {}
+      },
+      "source_trail": [
+        {
+          "node_id": "decision",
+          "edge_type": "retrieved",
+          "confidence": 1
+        }
+      ],
+      "must_cite": true,
+      "rationale": "golden fixture"
+    }
+  ],
+  "suppressed": null,
+  "evidence_path": [
+    "perm",
+    "proc",
+    "decision"
+  ],
+  "source_trail": [
+    {
+      "node_id": "perm",
+      "edge_type": "retrieved",
+      "confidence": 1
+    },
+    {
+      "node_id": "proc",
+      "edge_type": "retrieved",
+      "confidence": 1
+    },
+    {
+      "node_id": "decision",
+      "edge_type": "retrieved",
+      "confidence": 1
+    }
+  ],
+  "critique_summary": "golden fixture",
+  "tokens_used": 30,
+  "hygiene_signal": "green"
+}

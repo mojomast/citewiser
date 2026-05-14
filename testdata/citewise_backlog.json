@@ -1,0 +1,35 @@
+{
+  "items": [
+    {
+      "id": "foundation",
+      "title": "Foundational Policy",
+      "source": "Policy KB",
+      "year": 2026,
+      "type": "foundation",
+      "notes": "Current policy baseline.",
+      "goal_fit": 1,
+      "trust": 1
+    },
+    {
+      "id": "overview",
+      "title": "Overview Review",
+      "source": "Policy KB",
+      "year": 2026,
+      "type": "review",
+      "notes": "Overview of the policy landscape.",
+      "goal_fit": 0.8,
+      "trust": 0.9
+    }
+  ],
+  "edges": [
+    {
+      "source_id": "overview",
+      "target_id": "foundation",
+      "type": "overview",
+      "confidence": 0.9
+    }
+  ],
+  "goal": {
+    "prompt": "Understand the current policy"
+  }
+}

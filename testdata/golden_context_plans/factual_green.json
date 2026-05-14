@@ -1,0 +1,49 @@
+{
+  "query_id": "q-factual-green",
+  "query_type": "Factual",
+  "slots": [
+    {
+      "index": 0,
+      "slot_type": "foundation",
+      "node_id": "policy",
+      "role": "foundation",
+      "title": "policy title",
+      "text": "policy text",
+      "token_count": 10,
+      "score": 90,
+      "position": "front",
+      "source": {
+        "node_id": "policy",
+        "origin": "golden",
+        "source": "fixture",
+        "version": "v4",
+        "observed_at": "0001-01-01T00:00:00Z",
+        "updated_at": "0001-01-01T00:00:00Z",
+        "locator": {}
+      },
+      "source_trail": [
+        {
+          "node_id": "policy",
+          "edge_type": "retrieved",
+          "confidence": 1
+        }
+      ],
+      "must_cite": true,
+      "rationale": "golden fixture"
+    }
+  ],
+  "suppressed": null,
+  "evidence_path": [
+    "policy"
+  ],
+  "source_trail": [
+    {
+      "node_id": "policy",
+      "edge_type": "retrieved",
+      "confidence": 1
+    }
+  ],
+  "critique_summary": "golden fixture",
+  "tokens_used": 10,
+  "hygiene_signal": "green"
+}

@@ -1,0 +1,55 @@
+{
+  "query_id": "q-temporal-stale",
+  "query_type": "Temporal",
+  "slots": [
+    {
+      "index": 0,
+      "slot_type": "foundation",
+      "node_id": "old-policy",
+      "role": "foundation",
+      "title": "old-policy title",
+      "text": "old-policy text",
+      "token_count": 10,
+      "score": 90,
+      "position": "front",
+      "source": {
+        "node_id": "old-policy",
+        "origin": "golden",
+        "source": "fixture",
+        "version": "v1",
+        "observed_at": "0001-01-01T00:00:00Z",
+        "updated_at": "0001-01-01T00:00:00Z",
+        "locator": {}
+      },
+      "source_trail": [
+        {
+          "node_id": "old-policy",
+          "edge_type": "retrieved",
+          "confidence": 1
+        }
+      ],
+      "must_cite": true,
+      "rationale": "golden fixture"
+    }
+  ],
+  "suppressed": [
+    {
+      "node_id": "suppressed",
+      "reason": "red-plan",
+      "detail": "fixture"
+    }
+  ],
+  "evidence_path": [
+    "old-policy"
+  ],
+  "source_trail": [
+    {
+      "node_id": "old-policy",
+      "edge_type": "retrieved",
+      "confidence": 1
+    }
+  ],
+  "critique_summary": "golden fixture",
+  "tokens_used": 10,
+  "hygiene_signal": "red"
+}

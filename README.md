@@ -23,6 +23,18 @@ Implemented so far:
 
 Future milestones focus on hardening, golden fixtures, release gates, and optional post-MVP CLI additions.
 
+## Non-Goals
+
+CitewiseRAG does not generate embeddings, chunk documents, manage vector databases, detect communities, call LLMs, or replace the existing Citewise CLI behavior. Retrieval, reranking, indexing, graph-store operation, and answer generation remain upstream or downstream responsibilities.
+
+## Upstream Handoff
+
+Upstream retrieval systems should send `ragnode.CandidateSet` data with node IDs, access metadata, source versions, evidence paths where available, and normalized relevance features. Cross-encoder or ColBERT-style rerankers must run after coarse ACL filtering and must not receive unauthorized text; CitewiseRAG still reapplies hard access gates before ranking and packing.
+
+## Downstream Obligations
+
+Downstream agents receive only `packer.ContextPlan`. Answers or action logs must preserve `query_id`, cited slot `node_id` values, source/origin, version, observed or updated time, locators when present, evidence path, suppressed counts by reason, hygiene signal, and critique summary.
+
 ## Development
 
 Run the full test suite with:
@@ -48,6 +60,8 @@ The core module is stdlib-first. Do not add infrastructure, LLM, vector database
 ## Memory
 
 `pkg/memory.FileStore` writes one JSON object per line to `citewiserag_memory.jsonl` by default. Callers should invoke `StoreContextPlan` only after a plan is accepted by the caller or an agent completes successfully; red plans are rejected. Loads and reuse checks re-run access control against the store's current caller context and optional current node map, reject superseded or version-mismatched slots, and require topic Jaccard similarity of at least `0.70`.
+
+Redis, Neo4j, Mem0, Zep, and other memory backends are caller-owned adapters that can implement `memory.MemoryWriteBack`; core ships only the stdlib JSONL `FileStore`.
 
 ## Server
 

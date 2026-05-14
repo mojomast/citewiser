@@ -45,50 +45,46 @@ Completed task commits:
 - `T04.2` lost-in-the-middle ordering/budget trimming: `2a66c2b`
 - `T04.3` hygiene analyzer: `148a510`
 - `T04.4` deterministic query router: `148a510`
-- `T05.1` GraphRAG JSON mapper: implemented and verified in working tree, not committed because no commit was explicitly requested in this slice.
-- `T05.2` optional GraphRAG parquet reader: implemented and verified in working tree, not committed because no commit was explicitly requested in this slice.
-- `T05.3` LightRAG/hybrid/reranker handoff mappers: implemented and verified in working tree, not committed because no commit was explicitly requested in this slice.
-- `T05.4` file-backed memory store: implemented and verified in working tree, not committed because no commit was explicitly requested in this slice.
-- `T06.1` top-level RAG pipeline: implemented and verified in working tree, not committed because no commit was explicitly requested in this slice.
-- `T06.2` optional HTTP server: implemented and verified in working tree, not committed because no commit was explicitly requested in this slice.
-- `T06.3` optional stdio JSON integration: implemented and verified in working tree, not committed because no commit was explicitly requested in this slice.
+- `T05.1` GraphRAG JSON mapper: `23b26db`
+- `T05.2` optional GraphRAG parquet reader: `23b26db`
+- `T05.3` LightRAG/hybrid/reranker handoff mappers: `23b26db`
+- `T05.4` file-backed memory store: `23b26db`
+- `T06.1` top-level RAG pipeline: `23b26db`
+- `T06.2` optional HTTP server: `23b26db`
+- `T06.3` optional stdio JSON integration: `23b26db`
+- `T07.1` property and invariant tests: implemented and verified in working tree, pending commit.
+- `T07.2` golden fixtures, docs, and examples: implemented and verified in working tree, pending commit.
+- `T07.3` release gate and compatibility audit: implemented and verified in working tree, pending commit.
 
 Latest ledger-only hash updates exist after several task commits; use `git log --oneline -10` for exact current HEAD.
 
-The working tree has intentional uncommitted T05.1-T06.3 changes when this handoff was updated: README/docs updates, go.mod/go.sum parquet dependency updates, GraphRAG/LightRAG/hybrid integration code and tests, GraphRAG fixture data, memory store code/tests, rag pipeline code/tests, and cmd/serve HTTP/stdio code/tests.
+The working tree has intentional uncommitted T07.1-T07.3 changes when this handoff was updated: invariant tests, rag examples, golden context-plan fixtures, compatibility backlog fixture, README release docs, RELEASE_AUDIT.md, and ledger updates.
 
 ## Next Work
 
-Earliest unblocked task after accepting the current working tree changes: `T07.1 Implement Property And Invariant Tests`.
+Earliest unblocked task after accepting the current working tree changes: none. All planned tasks through `T07.3` are implemented and verified.
 
 Primary files to create/update:
 
-- package test files across `pkg/*`
-- `DEVPLAN.md`
-- `HANDOFF.md`
-- `README.md` if new test/golden behavior is documented
+- No remaining planned implementation tasks.
+- If work continues, use `spec.md` open questions and release feedback to add new `DEVPLAN.md` tasks before coding.
 
 Relevant `DEVPLAN.md` refs:
 
-- `T07.1`: around lines 732-746, depends on T02.1, T03.3, T04.1, and T05.4.
-- `T07.2`: follows T07.1 and depends on all M01-M06 tasks.
-- Parallelization map: around lines 687-707.
+- `T07.1`, `T07.2`, and `T07.3`: complete in `DEVPLAN.md`.
+- Open decisions remain at the end of `DEVPLAN.md` for post-MVP/product follow-up.
 
 Relevant `spec.md` refs:
 
-- Property/invariant test strategy: around lines 1137-1148.
-- Access-control invariants: around lines 969-984.
-- Lost-in-the-middle/budget invariants: around lines 1021-1040.
-- Unit-test strategy: around lines 1137-1148.
-- Dependency guidance: around lines 1203-1217. Keep core stdlib-only unless a task explicitly changes that rule.
+- Test strategy: around lines 1136-1201.
+- Dependency guidance: around lines 1203-1217.
+- Open questions for future product decisions: around lines 1218-1232.
 
-Concrete `T07.1` instructions:
+Concrete next instructions:
 
-1. Claim `T07.1` in `DEVPLAN.md` with a new `PROGRESS` block.
-2. Add property/invariant tests using `testing/quick` where it fits naturally.
-3. Focus on unauthorized text absence, budget bounds, duplicate limits, deterministic JSON, and provenance coverage.
-4. Run `go test ./...` repeatedly enough to catch nondeterminism.
-5. Update `DEVPLAN.md`, `HANDOFF.md`, and README/docs if public test/golden behavior changes.
+1. Commit and push T07.1-T07.3 if not already committed.
+2. If new work is requested, add new anchored tasks to `DEVPLAN.md` before implementation.
+3. Resolve open product questions in `spec.md`/`DEVPLAN.md` before changing behavior that depends on them.
 
 T03.1 design decisions made in the current uncommitted slice:
 
@@ -130,6 +126,12 @@ T05.4/T06.1/T06.2/T06.3 design decisions made in the current uncommitted slice:
 - `cmd/serve` uses stdlib HTTP only; `/pack` returns HTTP 200 for red plans so callers can inspect the red plan and corrective details.
 - `go run ./cmd/serve stdio` accepts `operation` plus `request` JSON and reuses the HTTP DTOs/pipeline behavior.
 
+T07.1/T07.2/T07.3 design decisions made in the current uncommitted slice:
+
+- Property tests are focused on stable invariants: unauthorized text absence, budget/determinism/provenance, and duplicate cluster limits.
+- Golden context-plan fixtures are static byte-for-byte JSON fixtures for Agentic green, Agentic red, Temporal stale red, and Factual green shapes.
+- `RELEASE_AUDIT.md` records release-gate commands and dependency-audit notes; non-tagged builds remain stdlib plus project packages, while parquet dependencies are isolated behind `graphrag_parquet`.
+
 Verification from the current slice:
 
 - `go test ./pkg/ranker` passed.
@@ -143,11 +145,16 @@ Verification from the current slice:
 - `go test ./pkg/rag` passed.
 - `go test ./cmd/serve` passed.
 - `go test ./pkg/memory ./pkg/rag ./cmd/serve` passed.
+- `go test ./pkg/rag` passed after invariant/example/golden additions.
+- `go test ./...` passed repeatedly.
+- `go test -tags graphrag_parquet ./...` passed.
+- Existing CLI commands `roles`, `score`, `queue`, `explain`, `hygiene`, and `export` passed against `testdata/citewise_backlog.json`.
+- `go list -deps ./...` and `go list -deps -tags graphrag_parquet ./pkg/integrations/graphrag` were audited and recorded in `RELEASE_AUDIT.md`.
 - `go test ./...` passed.
 
 Parallel option after claiming only one task yourself:
 
-- A subagent may research `T07.2` golden fixture/docs requirements without writing files while you implement `T07.1`.
+- No obvious safe parallel implementation remains until new tasks are added.
 - Do not have subagents edit `DEVPLAN.md` or code concurrently unless each claims a separate unblocked task and the file boundaries are safe.
 
 ## Slice Completion Checklist

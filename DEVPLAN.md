@@ -579,7 +579,7 @@ Evidence: added pkg/integrations/graphrag JSON mapper, fixture, and tests; `go t
 Spec refs: spec.md section 7.1 implemented
 Docs: pkg/integrations/graphrag/doc.go and README.md updated for GraphRAG mapper behavior
 Notes: GraphRAG JSON imports documents, text_units, entities, relationships, community_reports, communities, and covariates; community report rank is stored in Attributes["community_report_rank"] and human_readable_id is preserved.
-Commit: not committed
+Commit: 23b26db
 <!-- /PROGRESS -->
 
 Scope: `pkg/integrations/graphrag/mapper.go`, `testdata/graphrag_minimal`.
@@ -606,7 +606,7 @@ Evidence: added pkg/integrations/graphrag parquet tag reader/disabled stubs and 
 Spec refs: spec.md section 7.1 and dependency guidance implemented
 Docs: pkg/integrations/graphrag/doc.go and README.md document parquet build-tag isolation
 Notes: github.com/parquet-go/parquet-go imports are only present in files guarded by graphrag_parquet. go.mod now records Go 1.24.9 because parquet-go v0.29.0 requires it.
-Commit: not committed
+Commit: 23b26db
 <!-- /PROGRESS -->
 
 Scope: `pkg/integrations/graphrag/parquet.go`.
@@ -634,7 +634,7 @@ Evidence: added pkg/integrations/lightrag mapper and tests; added pkg/integratio
 Spec refs: spec.md sections 7.2, 7.3, and 7.4 implemented
 Docs: pkg/integrations/lightrag/doc.go, pkg/integrations/hybrid/doc.go, and README.md updated for handoff behavior
 Notes: LightRAG local/global retrieval modes are preserved; hybrid candidates preserve method scores, ranks, weights, QueryRelevance, and RerankerScore. Cross-encoder scores remain input relevance features only; downstream ranker/packer still enforce access, diversity, counterpoints, and ordering.
-Commit: not committed
+Commit: 23b26db
 <!-- /PROGRESS -->
 
 Scope: `pkg/integrations/lightrag/mapper.go`, `pkg/integrations/hybrid/schema.go`, cross-encoder handoff fixtures.
@@ -663,7 +663,7 @@ Evidence: added pkg/memory interface, file store, redaction/regating helpers, an
 Spec refs: spec.md sections 3.8, 7.6, 8.1, and 10.1-10.3 checked
 Docs: pkg/memory/doc.go and README.md updated for JSONL write-back, re-gating, and reuse behavior
 Notes: FileStore keeps the spec interface and uses store fields for caller access/current node state; red plans are rejected and plan payloads are populated at write time.
-Commit: not committed
+Commit: 23b26db
 <!-- /PROGRESS -->
 
 Scope: `pkg/memory/interface.go`, `file_store.go`, `redact.go`.
@@ -694,7 +694,7 @@ Evidence: added pkg/rag pipeline, interfaces, defaults, metadata builder, typed 
 Spec refs: spec.md sections 3.9, 8.1, 12.2 checked
 Docs: pkg/rag/doc.go and README.md updated for orchestration behavior
 Notes: Pipeline exposes `rag.Analyze`, default ranker/packer/router/hygiene/memory constructors, and returns typed errors for invalid candidates, access-denied-only ranked sets, and red plans.
-Commit: not committed
+Commit: 23b26db
 <!-- /PROGRESS -->
 
 Scope: `pkg/rag/pipeline.go`, `interfaces.go`.
@@ -722,7 +722,7 @@ Evidence: added cmd/serve HTTP main, schema, handlers, and httptest coverage; `g
 Spec refs: spec.md section 3.9 checked; D04 default red plan HTTP 200 behavior applied
 Docs: README.md updated for server endpoints and red-plan HTTP behavior
 Notes: Server uses stdlib `net/http`, `encoding/json`, `context`, and `log/slog`; `/pack` returns HTTP 200 for red plans with the plan body intact.
-Commit: not committed
+Commit: 23b26db
 <!-- /PROGRESS -->
 
 Scope: `cmd/serve/main.go`, `handlers.go`, `schema.go`.
@@ -752,7 +752,7 @@ Evidence: added cmd/serve stdio dispatcher and golden-style router/pack tests; `
 Spec refs: spec.md section 3.9 checked
 Docs: README.md updated for stdio command and request/response envelope
 Notes: `go run ./cmd/serve stdio` reuses the same DTOs and pipeline as HTTP for router, rank, pack, and hygiene operations.
-Commit: not committed
+Commit: 23b26db
 <!-- /PROGRESS -->
 
 Scope: `cmd/serve` or a small sibling command if HTTP and stdio need separate entrypoints.
@@ -770,7 +770,17 @@ Verification:
 - Golden stdin/stdout tests for one route request and one pack request.
 
 <!-- TASK:T07.1-PROPERTY-TESTS -->
-### [ ] T07.1 Implement Property And Invariant Tests
+### [x] T07.1 Implement Property And Invariant Tests
+
+<!-- PROGRESS:opencode:T07.1-PROPERTY-TESTS:2026-05-14T19:55Z -->
+Status: [x]
+Owner: opencode
+Evidence: added pkg/rag invariant property tests for access text absence, budget/determinism/provenance, and duplicate cluster limits; `go test ./pkg/rag` passed; `go test ./...` passed twice
+Spec refs: spec.md section 13.2 checked
+Docs: not needed: tests enforce existing public invariants without changing runtime behavior
+Notes: `testing/quick` coverage is focused on stable invariants rather than broad random graph generation.
+Commit: not committed
+<!-- /PROGRESS -->
 
 Scope: package test files across `pkg/*`.
 
@@ -786,7 +796,17 @@ Verification:
 - Run `go test ./...` repeatedly enough to catch nondeterminism.
 
 <!-- TASK:T07.2-GOLDEN-AND-DOCS -->
-### [ ] T07.2 Add Golden Fixtures, Docs, And Examples
+### [x] T07.2 Add Golden Fixtures, Docs, And Examples
+
+<!-- PROGRESS:opencode:T07.2-GOLDEN-AND-DOCS:2026-05-14T19:55Z -->
+Status: [x]
+Owner: opencode
+Evidence: added rag examples, byte-for-byte golden context plan tests, `testdata/golden_context_plans`, and compatibility backlog fixture; `go test ./pkg/rag` passed; `go test ./...` passed
+Spec refs: spec.md sections 7.5, 7.6, 11, and 13.3-13.4 checked
+Docs: README.md updated for non-goals, upstream handoff, downstream obligations, and caller-owned memory adapters
+Notes: Golden fixtures cover Agentic green, Agentic red, Temporal stale red, and Factual green plan shapes.
+Commit: not committed
+<!-- /PROGRESS -->
 
 Scope: `testdata/*`, `README.md` or docs file, example tests.
 
@@ -805,7 +825,17 @@ Verification:
 - Examples compile under `go test ./...`.
 
 <!-- TASK:T07.3-RELEASE-GATE -->
-### [ ] T07.3 Release Gate And Compatibility Audit
+### [x] T07.3 Release Gate And Compatibility Audit
+
+<!-- PROGRESS:opencode:T07.3-RELEASE-GATE:2026-05-14T19:55Z -->
+Status: [x]
+Owner: opencode
+Evidence: added RELEASE_AUDIT.md; `go test ./...` passed; `go test -tags graphrag_parquet ./...` passed; CLI commands roles/score/queue/explain/hygiene/export passed against testdata/citewise_backlog.json; `go list -deps ./...` and parquet-tag dependency audit completed
+Spec refs: spec.md sections 13.5 and 14 checked
+Docs: RELEASE_AUDIT.md records release-gate commands and dependency notes
+Notes: Non-tagged dependency list shows stdlib plus project packages; parquet external dependencies appear only under `graphrag_parquet` tag.
+Commit: not committed
+<!-- /PROGRESS -->
 
 Scope: whole repository.
 
